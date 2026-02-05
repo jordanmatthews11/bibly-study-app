@@ -1,0 +1,87 @@
+import { useState, type ReactNode } from 'react'
+import { Link, useLocation } from 'react-router-dom'
+
+const nav = [
+  { to: '/bible', label: 'Bible' },
+  { to: '/search', label: 'Search' },
+  { to: '/characters', label: 'Characters' },
+  { to: '/study', label: 'Study' },
+]
+
+export default function Layout({ children }: { children: ReactNode }) {
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const location = useLocation()
+
+  return (
+    <div className="min-h-screen bg-stone-50 text-stone-900 dark:bg-stone-900 dark:text-stone-100">
+      <header className="sticky top-0 z-20 flex items-center justify-between border-b border-stone-200 bg-white/95 px-4 py-3 dark:border-stone-700 dark:bg-stone-900/95 backdrop-blur">
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setSidebarOpen((o) => !o)}
+            className="rounded p-2 hover:bg-stone-100 dark:hover:bg-stone-800 md:hidden"
+            aria-label="Toggle menu"
+          >
+            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <Link to="/bible" className="font-semibold text-stone-900 dark:text-stone-100">
+            Bible Study
+          </Link>
+        </div>
+        <nav className="hidden md:flex md:items-center md:gap-1">
+          {nav.map(({ to, label }) => (
+            <Link
+              key={to}
+              to={to}
+              className={`rounded px-3 py-2 text-sm font-medium ${
+                location.pathname.startsWith(to)
+                  ? 'bg-stone-200 text-stone-900 dark:bg-stone-700 dark:text-stone-100'
+                  : 'text-stone-600 hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100'
+              }`}
+            >
+              {label}
+            </Link>
+          ))}
+        </nav>
+        <span className="text-sm font-medium text-stone-500 dark:text-stone-400">ESV</span>
+      </header>
+
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-10 bg-black/30 md:hidden"
+          role="button"
+          tabIndex={0}
+          onClick={() => setSidebarOpen(false)}
+          onKeyDown={(e) => e.key === 'Escape' && setSidebarOpen(false)}
+          aria-label="Close menu"
+        />
+      )}
+      <aside
+        className={`fixed left-0 top-0 z-20 h-full w-64 transform border-r border-stone-200 bg-white transition-transform dark:border-stone-700 dark:bg-stone-900 md:static md:z-0 md:block md:translate-x-0 ${
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        <div className="flex flex-col gap-1 p-4 md:hidden">
+          {nav.map(({ to, label }) => (
+            <Link
+              key={to}
+              to={to}
+              onClick={() => setSidebarOpen(false)}
+              className={`rounded px-3 py-2 text-sm font-medium ${
+                location.pathname.startsWith(to)
+                  ? 'bg-stone-200 dark:bg-stone-700'
+                  : 'hover:bg-stone-100 dark:hover:bg-stone-800'
+              }`}
+            >
+              {label}
+            </Link>
+          ))}
+        </div>
+      </aside>
+
+      <main className="min-h-[calc(100vh-56px)]">{children}</main>
+    </div>
+  )
+}

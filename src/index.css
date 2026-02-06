@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Class-based dark mode so the toggle can control it */
+@custom-variant dark (&:where(.dark, .dark *));
+
 body {
   margin: 0;
   min-width: 320px;

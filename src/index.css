@@ -13,8 +13,8 @@
 }
 
 @theme {
-  /* Light mode – bright, airy, optimized for daytime use */
-  --color-warm-bg: #fefcf9;
+  /* Light mode – warm cream/beige, clearly distinct from pure white */
+  --color-warm-bg: #f5f0e8;
   --color-warm-surface: #ffffff;
   --color-warm-border: #e5e0d8;
   --color-warm-text: #171412;
@@ -44,4 +44,5 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  background-color: var(--color-warm-bg);
 }

@@ -13,30 +13,30 @@
 }
 
 @theme {
-  /* Light mode – cream backgrounds, warm neutrals */
-  --color-warm-bg: #faf8f5;
+  /* Light mode – bright, airy, optimized for daytime use */
+  --color-warm-bg: #fefcf9;
   --color-warm-surface: #ffffff;
-  --color-warm-border: #e7e2db;
-  --color-warm-text: #1c1917;
+  --color-warm-border: #e5e0d8;
+  --color-warm-text: #171412;
   --color-warm-muted: #57534e;
   --color-warm-accent: #b45309;
   --color-warm-accent-hover: #92400e;
   --color-warm-accent-subtle: #fef3c7;
-  --color-warm-hover: #f5f0e8;
+  --color-warm-hover: #f7f4ef;
 }
 
 .dark {
   @theme {
-    /* Dark mode – warm charcoal, elevated surfaces, lighter hover */
-    --color-warm-bg: #1c1917;
-    --color-warm-surface: #292524;
-    --color-warm-border: #44403c;
+    /* Dark mode – true dark, near-black, warm charcoal */
+    --color-warm-bg: #0c0a09;
+    --color-warm-surface: #1c1917;
+    --color-warm-border: #292524;
     --color-warm-text: #fafaf9;
     --color-warm-muted: #a8a29e;
     --color-warm-accent: #f59e0b;
     --color-warm-accent-hover: #d97706;
-    --color-warm-accent-subtle: #78350f;
-    --color-warm-hover: #44403c;
+    --color-warm-accent-subtle: #451a03;
+    --color-warm-hover: #292524;
   }
 }
 

@@ -22,6 +22,35 @@ export default function BibleChapter() {
     enabled: Boolean(bookId && !Number.isNaN(chapterNum) && hasEsvApiKey()),
   })
 
+  const verses = useMemo(
+    () => parseEsvVerses(data?.passageText ?? ''),
+    [data?.passageText]
+  )
+
+  useEffect(() => {
+    if (!data) {
+      setPassageContext(null)
+      return
+    }
+    setPassageContext({
+      bookId: data.bookId,
+      bookName: data.bookName,
+      chapter: data.chapter,
+      parsedVerses: verses,
+      selectedVerseNumbers: Array.from(selectedVerses),
+    })
+    return () => setPassageContext(null)
+  }, [data, verses, selectedVerses, setPassageContext])
+
+  const toggleVerse = (num: number) => {
+    setSelectedVerses((prev) => {
+      const next = new Set(prev)
+      if (next.has(num)) next.delete(num)
+      else next.add(num)
+      return next
+    })
+  }
+
   if (!bookId || Number.isNaN(chapterNum)) {
     return (
       <div className="p-6">
@@ -57,27 +86,6 @@ export default function BibleChapter() {
   if (!data) return null
 
   const esvData = data
-  const verses = useMemo(() => parseEsvVerses(esvData.passageText), [esvData.passageText])
-
-  useEffect(() => {
-    setPassageContext({
-      bookId: esvData.bookId,
-      bookName: esvData.bookName,
-      chapter: esvData.chapter,
-      parsedVerses: verses,
-      selectedVerseNumbers: Array.from(selectedVerses),
-    })
-    return () => setPassageContext(null)
-  }, [esvData.bookId, esvData.bookName, esvData.chapter, verses, selectedVerses, setPassageContext])
-
-  const toggleVerse = (num: number) => {
-    setSelectedVerses((prev) => {
-      const next = new Set(prev)
-      if (next.has(num)) next.delete(num)
-      else next.add(num)
-      return next
-    })
-  }
 
   return (
     <div className="min-h-[calc(100vh-56px)]">

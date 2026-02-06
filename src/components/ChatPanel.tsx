@@ -77,7 +77,7 @@ export default function ChatPanel() {
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="fixed bottom-6 right-6 z-30 flex h-12 w-12 items-center justify-center rounded-full bg-stone-800 text-white shadow-lg hover:bg-stone-700 dark:bg-stone-700 dark:hover:bg-stone-600"
+        className="fixed bottom-6 right-6 z-30 flex h-12 w-12 items-center justify-center rounded-full bg-warm-accent text-white shadow-lg hover:bg-warm-accent-hover"
         aria-label={open ? 'Close chat' : 'Open Bible chat'}
         title="Bible chat"
       >
@@ -93,21 +93,21 @@ export default function ChatPanel() {
 
       {open && (
         <div
-          className="fixed bottom-24 right-6 z-30 flex w-full max-w-md flex-col overflow-hidden rounded-lg border border-stone-200 bg-white shadow-xl dark:border-stone-700 dark:bg-stone-900"
+          className="fixed bottom-24 right-6 z-30 flex w-full max-w-md flex-col overflow-hidden rounded-lg border border-warm-border bg-warm-surface shadow-xl"
           style={{ height: 'min(420px, 60vh)' }}
         >
-          <div className="border-b border-stone-200 px-3 py-2 dark:border-stone-700">
-            <h2 className="text-sm font-semibold text-stone-900 dark:text-stone-100">
+          <div className="border-b border-warm-border px-3 py-2">
+            <h2 className="text-sm font-semibold text-warm-text">
               Bible chat
             </h2>
             {passageContext ? (
-              <p className="text-xs text-stone-500 dark:text-stone-400">
+              <p className="text-xs text-warm-muted">
                 {passageContext.bookName} {passageContext.chapter}
                 {passageContext.selectedVerseNumbers.length > 0 &&
                   ` · ${passageContext.selectedVerseNumbers.length} selected`}
               </p>
             ) : (
-              <p className="text-xs text-stone-500 dark:text-stone-400">
+              <p className="text-xs text-warm-muted">
                 Open a passage to ask about it
               </p>
             )}
@@ -117,7 +117,7 @@ export default function ChatPanel() {
             className="flex-1 overflow-y-auto p-3 space-y-3"
           >
             {messages.length === 0 && (
-              <p className="text-sm text-stone-500 dark:text-stone-400">
+              <p className="text-sm text-warm-muted">
                 Ask a question about the passage or verses. Your current passage and selection are
                 sent with each message.
               </p>
@@ -127,15 +127,15 @@ export default function ChatPanel() {
                 key={m.id}
                 className={`rounded-lg px-3 py-2 text-sm ${
                   m.role === 'user'
-                    ? 'ml-8 bg-stone-200 text-stone-900 dark:bg-stone-700 dark:text-stone-100'
-                    : 'mr-8 bg-stone-100 text-stone-800 dark:bg-stone-800 dark:text-stone-200'
+                    ? 'ml-8 bg-warm-accent-subtle text-warm-text'
+                    : 'mr-8 bg-warm-hover text-warm-text'
                 }`}
               >
                 <span className="whitespace-pre-wrap">{m.content}</span>
               </div>
             ))}
           </div>
-          <div className="border-t border-stone-200 p-2 dark:border-stone-700">
+          <div className="border-t border-warm-border p-2">
             <form
               onSubmit={(e) => {
                 e.preventDefault()
@@ -148,14 +148,14 @@ export default function ChatPanel() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask about this passage…"
-                className="flex-1 rounded border border-stone-300 bg-white px-3 py-2 text-sm dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100"
+                className="flex-1 rounded border border-warm-border bg-warm-surface px-3 py-2 text-sm text-warm-text"
                 disabled={sending}
                 aria-label="Chat message"
               />
               <button
                 type="submit"
                 disabled={sending || !input.trim()}
-                className="rounded bg-stone-800 px-3 py-2 text-sm font-medium text-white hover:bg-stone-700 disabled:opacity-50 dark:bg-stone-700 dark:hover:bg-stone-600"
+                className="rounded bg-warm-accent px-3 py-2 text-sm font-medium text-white hover:bg-warm-accent-hover disabled:opacity-50"
               >
                 Send
               </button>

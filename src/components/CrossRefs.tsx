@@ -32,7 +32,7 @@ export default function CrossRefs({
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="rounded px-1.5 py-0.5 text-xs text-stone-500 hover:bg-stone-100 dark:hover:bg-stone-700 dark:hover:text-stone-400"
+        className="rounded px-1.5 py-0.5 text-xs text-warm-muted hover:bg-warm-hover"
         title="Cross-references"
         aria-expanded={open}
         aria-label={`Cross-references for verse ${verse}`}
@@ -40,20 +40,20 @@ export default function CrossRefs({
         ↪
       </button>
       {open && (
-        <div className="absolute left-0 top-full z-10 mt-1 w-56 rounded border border-stone-200 bg-white p-2 shadow-lg dark:border-stone-700 dark:bg-stone-800">
-          <div className="mb-1 text-xs font-medium text-stone-500 dark:text-stone-400">
+        <div className="absolute left-0 top-full z-10 mt-1 w-56 rounded border border-warm-border bg-warm-surface p-2 shadow-lg">
+          <div className="mb-1 text-xs font-medium text-warm-muted">
             Cross-references
           </div>
-          {isLoading && <p className="text-xs text-stone-500">Loading…</p>}
+          {isLoading && <p className="text-xs text-warm-muted">Loading…</p>}
           {!isLoading && topRefs.length === 0 && (
-            <p className="text-xs text-stone-500">None</p>
+            <p className="text-xs text-warm-muted">None</p>
           )}
           <ul className="max-h-40 overflow-auto text-xs">
             {topRefs.map((r, i) => (
               <li key={i}>
                 <Link
                   to={`/bible/${r.book}/${r.chapter}#v${r.verse}`}
-                  className="block rounded py-0.5 text-stone-700 hover:bg-stone-100 dark:text-stone-300 dark:hover:bg-stone-700"
+                  className="block rounded py-0.5 text-warm-text hover:bg-warm-hover"
                   onClick={() => setOpen(false)}
                 >
                   {formatRef(r)}

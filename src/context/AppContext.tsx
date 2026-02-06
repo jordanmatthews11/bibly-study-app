@@ -6,6 +6,7 @@ import {
   useEffect,
   type ReactNode,
 } from 'react'
+import { safePick } from '../utils/safeStorage'
 
 const STORAGE_KEY = 'bible-study-app-settings'
 const DEFAULT_TRANSLATION = 'ESV'
@@ -14,6 +15,7 @@ type AppSettings = {
   translationId: string
 }
 
+const SETTINGS_KEYS = ['translationId'] as const
 const defaultSettings: AppSettings = {
   translationId: DEFAULT_TRANSLATION,
 }
@@ -22,8 +24,9 @@ function loadSettings(): AppSettings {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (raw) {
-      const parsed = JSON.parse(raw) as Partial<AppSettings>
-      return { ...defaultSettings, ...parsed }
+      const parsed = JSON.parse(raw) as unknown
+      const safe = safePick<AppSettings>(parsed, SETTINGS_KEYS)
+      return { ...defaultSettings, ...safe }
     }
   } catch {
     // ignore

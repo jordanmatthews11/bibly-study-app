@@ -15,7 +15,7 @@ export default function BookList({
   return (
     <nav className="flex flex-col gap-4" aria-label="Bible books">
       <section>
-        <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-stone-400 dark:text-stone-500">
+        <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-warm-muted">
           Old Testament
         </h3>
         <ul className="flex flex-col gap-0.5">
@@ -23,7 +23,7 @@ export default function BookList({
             <li key={book.id}>
               <Link
                 to={`/bible/${book.id}/1`}
-                className="block rounded px-2 py-1.5 text-sm font-medium text-stone-700 hover:bg-stone-100 dark:text-stone-300 dark:hover:bg-stone-800"
+                className="block rounded px-2 py-1.5 text-sm font-medium text-warm-text hover:bg-warm-hover"
               >
                 {book.commonName}
               </Link>
@@ -32,7 +32,7 @@ export default function BookList({
         </ul>
       </section>
       <section>
-        <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-stone-400 dark:text-stone-500">
+        <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-warm-muted">
           New Testament
         </h3>
         <ul className="flex flex-col gap-0.5">
@@ -40,7 +40,7 @@ export default function BookList({
             <li key={book.id}>
               <Link
                 to={`/bible/${book.id}/1`}
-                className="block rounded px-2 py-1.5 text-sm font-medium text-stone-700 hover:bg-stone-100 dark:text-stone-300 dark:hover:bg-stone-800"
+                className="block rounded px-2 py-1.5 text-sm font-medium text-warm-text hover:bg-warm-hover"
               >
                 {book.commonName}
               </Link>

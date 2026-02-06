@@ -5,6 +5,7 @@ import type {
   TranslationBooks,
   TranslationBookChapter,
 } from '../types/bible'
+import { validateBookChapter, validateTranslationId } from '../utils/validation'
 import { ESV_BOOKS } from './esvApi'
 
 const BASE = import.meta.env.VITE_BIBLE_API_BASE ?? 'https://bible.helloao.org/api'
@@ -54,6 +55,8 @@ export async function getChapter(
   bookId: string,
   chapterNum: number
 ): Promise<TranslationBookChapter> {
+  validateTranslationId(translationId)
+  validateBookChapter(bookId, chapterNum)
   return fetchJson<TranslationBookChapter>(
     `${BASE}/${translationId}/${bookId}/${chapterNum}.json`
   )

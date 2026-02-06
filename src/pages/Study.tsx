@@ -37,13 +37,13 @@ export default function Study() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
-      <h1 className="mb-4 text-2xl font-semibold text-stone-900 dark:text-stone-100">
+      <h1 className="mb-4 text-2xl font-semibold text-warm-text">
         Study
       </h1>
-      <p className="mb-4 text-stone-600 dark:text-stone-400">
+      <p className="mb-4 text-warm-muted">
         Your bookmarks, highlights, and notes. Click a reference to open the passage.
       </p>
-      <div className="mb-4 flex gap-2 border-b border-stone-200 dark:border-stone-700">
+      <div className="mb-4 flex gap-2 border-b border-warm-border">
         {(['bookmarks', 'highlights', 'notes'] as const).map((t) => (
           <button
             key={t}
@@ -51,8 +51,8 @@ export default function Study() {
             onClick={() => setTab(t)}
             className={`border-b-2 px-3 py-2 text-sm font-medium capitalize ${
               tab === t
-                ? 'border-stone-900 text-stone-900 dark:border-stone-100 dark:text-stone-100'
-                : 'border-transparent text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-stone-300'
+                ? 'border-warm-accent text-warm-accent'
+                : 'border-transparent text-warm-muted hover:text-warm-text'
             }`}
           >
             {t}
@@ -63,18 +63,18 @@ export default function Study() {
       {tab === 'bookmarks' && (
         <ul className="space-y-2" aria-label="Bookmarks">
           {sortedBookmarks.length === 0 && (
-            <li className="text-stone-500 dark:text-stone-400">
+            <li className="text-warm-muted">
               No bookmarks yet. Bookmark verses from the Bible reader.
             </li>
           )}
           {sortedBookmarks.map((b) => (
             <li
               key={b.id}
-              className="flex items-center justify-between gap-2 rounded border border-stone-200 p-3 dark:border-stone-700"
+              className="flex items-center justify-between gap-2 rounded border border-warm-border p-3"
             >
               <Link
                 to={`/bible/${b.bookId}/${b.chapter}${b.verse != null ? `#v${b.verse}` : ''}`}
-                className="flex-1 font-medium text-stone-900 hover:underline dark:text-stone-100"
+                className="flex-1 font-medium text-warm-text hover:underline"
               >
                 {formatRef(b.bookId, b.chapter, b.verse)}
                 {b.label && ` – ${b.label}`}
@@ -82,7 +82,7 @@ export default function Study() {
               <button
                 type="button"
                 onClick={() => removeBookmark(b.id)}
-                className="rounded px-2 py-1 text-sm text-stone-500 hover:bg-stone-100 hover:text-stone-700 dark:hover:bg-stone-700 dark:hover:text-stone-300"
+                className="rounded px-2 py-1 text-sm text-warm-muted hover:bg-warm-hover hover:text-warm-text"
                 aria-label={`Remove bookmark ${formatRef(b.bookId, b.chapter, b.verse)}`}
               >
                 Remove
@@ -95,25 +95,25 @@ export default function Study() {
       {tab === 'highlights' && (
         <ul className="space-y-2" aria-label="Highlights">
           {sortedHighlights.length === 0 && (
-            <li className="text-stone-500 dark:text-stone-400">
+            <li className="text-warm-muted">
               No highlights yet. Highlight verses from the Bible reader.
             </li>
           )}
           {sortedHighlights.map((h) => (
             <li
               key={h.id}
-              className="flex items-center justify-between gap-2 rounded border border-stone-200 p-3 dark:border-stone-700"
+              className="flex items-center justify-between gap-2 rounded border border-warm-border p-3"
             >
               <Link
                 to={`/bible/${h.bookId}/${h.chapter}#v${h.verse}`}
-                className="flex-1 font-medium text-stone-900 hover:underline dark:text-stone-100"
+                className="flex-1 font-medium text-warm-text hover:underline"
               >
                 {formatRef(h.bookId, h.chapter, h.verse)}
               </Link>
               <button
                 type="button"
                 onClick={() => removeHighlight(h.bookId, h.chapter, h.verse)}
-                className="rounded px-2 py-1 text-sm text-stone-500 hover:bg-stone-100 hover:text-stone-700 dark:hover:bg-stone-700 dark:hover:text-stone-300"
+                className="rounded px-2 py-1 text-sm text-warm-muted hover:bg-warm-hover hover:text-warm-text"
                 aria-label={`Remove highlight ${formatRef(h.bookId, h.chapter, h.verse)}`}
               >
                 Remove
@@ -126,28 +126,28 @@ export default function Study() {
       {tab === 'notes' && (
         <ul className="space-y-2" aria-label="Notes">
           {sortedNotes.length === 0 && (
-            <li className="text-stone-500 dark:text-stone-400">
+            <li className="text-warm-muted">
               No notes yet. Add notes to verses from the Bible reader.
             </li>
           )}
           {sortedNotes.map((n) => (
             <li
               key={n.id}
-              className="rounded border border-stone-200 p-3 dark:border-stone-700"
+              className="rounded border border-warm-border p-3"
             >
               <Link
                 to={`/bible/${n.bookId}/${n.chapter}#v${n.verse}`}
-                className="font-medium text-stone-900 hover:underline dark:text-stone-100"
+                className="font-medium text-warm-text hover:underline"
               >
                 {formatRef(n.bookId, n.chapter, n.verse)}
               </Link>
-              <p className="mt-1 text-sm text-stone-600 dark:text-stone-400 line-clamp-2">
+              <p className="mt-1 text-sm text-warm-muted line-clamp-2">
                 {n.content}
               </p>
               <button
                 type="button"
                 onClick={() => removeNote(n.bookId, n.chapter, n.verse)}
-                className="mt-2 text-sm text-stone-500 hover:text-stone-700 dark:hover:text-stone-300"
+                className="mt-2 text-sm text-warm-muted hover:text-warm-text"
                 aria-label={`Remove note ${formatRef(n.bookId, n.chapter, n.verse)}`}
               >
                 Remove note

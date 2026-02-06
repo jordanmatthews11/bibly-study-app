@@ -8,6 +8,7 @@ const nav = [
   { to: '/search', label: 'Search' },
   { to: '/characters', label: 'Characters' },
   { to: '/study', label: 'Study' },
+  { to: '/flashcards', label: 'Flashcards' },
 ]
 
 export default function Layout({ children }: { children: ReactNode }) {
@@ -16,20 +17,20 @@ export default function Layout({ children }: { children: ReactNode }) {
   const { theme, toggleTheme } = useTheme()
 
   return (
-    <div className="min-h-screen bg-stone-50 text-stone-900 dark:bg-stone-900 dark:text-stone-100">
-      <header className="sticky top-0 z-20 flex items-center justify-between border-b border-stone-200 bg-white/95 px-4 py-3 dark:border-stone-700 dark:bg-stone-900/95 backdrop-blur">
+    <div className="min-h-screen bg-warm-bg text-warm-text">
+      <header className="sticky top-0 z-20 flex items-center justify-between border-b border-warm-border bg-warm-surface/95 px-4 py-3 backdrop-blur">
         <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={() => setSidebarOpen((o) => !o)}
-            className="rounded p-2 hover:bg-stone-100 dark:hover:bg-stone-800 md:hidden"
+            className="rounded p-2 hover:bg-warm-hover md:hidden"
             aria-label="Toggle menu"
           >
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
-          <Link to="/bible" className="font-semibold text-stone-900 dark:text-stone-100">
+          <Link to="/bible" className="font-semibold text-warm-text">
             Bible Study
           </Link>
         </div>
@@ -40,8 +41,8 @@ export default function Layout({ children }: { children: ReactNode }) {
               to={to}
               className={`rounded px-3 py-2 text-sm font-medium ${
                 location.pathname.startsWith(to)
-                  ? 'bg-stone-200 text-stone-900 dark:bg-stone-700 dark:text-stone-100'
-                  : 'text-stone-600 hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100'
+                  ? 'bg-warm-accent-subtle text-warm-accent'
+                  : 'text-warm-muted hover:bg-warm-hover hover:text-warm-text'
               }`}
             >
               {label}
@@ -52,7 +53,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           <button
             type="button"
             onClick={toggleTheme}
-            className="rounded p-2 text-stone-500 hover:bg-stone-100 hover:text-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-200"
+            className="rounded p-2 text-warm-muted hover:bg-warm-hover hover:text-warm-text"
             aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
             title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
           >
@@ -66,7 +67,7 @@ export default function Layout({ children }: { children: ReactNode }) {
               </svg>
             )}
           </button>
-          <span className="text-sm font-medium text-stone-500 dark:text-stone-400">ESV</span>
+          <span className="text-sm font-medium text-warm-muted">ESV</span>
         </div>
       </header>
 
@@ -81,7 +82,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         />
       )}
       <aside
-        className={`fixed left-0 top-0 z-20 h-full w-64 transform border-r border-stone-200 bg-white transition-transform dark:border-stone-700 dark:bg-stone-900 md:static md:z-0 md:block md:translate-x-0 ${
+        className={`fixed left-0 top-0 z-20 h-full w-64 transform border-r border-warm-border bg-warm-surface transition-transform md:static md:z-0 md:block md:translate-x-0 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -93,8 +94,8 @@ export default function Layout({ children }: { children: ReactNode }) {
               onClick={() => setSidebarOpen(false)}
               className={`rounded px-3 py-2 text-sm font-medium ${
                 location.pathname.startsWith(to)
-                  ? 'bg-stone-200 dark:bg-stone-700'
-                  : 'hover:bg-stone-100 dark:hover:bg-stone-800'
+                  ? 'bg-warm-accent-subtle text-warm-accent'
+                  : 'text-warm-text hover:bg-warm-hover'
               }`}
             >
               {label}

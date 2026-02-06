@@ -9,6 +9,7 @@ const Search = lazy(() => import('./pages/Search'))
 const Characters = lazy(() => import('./pages/Characters'))
 const CharacterDetail = lazy(() => import('./pages/CharacterDetail'))
 const Study = lazy(() => import('./pages/Study'))
+const Flashcards = lazy(() => import('./pages/Flashcards'))
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/characters" element={<Characters />} />
           <Route path="/characters/:id" element={<CharacterDetail />} />
           <Route path="/study" element={<Study />} />
+          <Route path="/flashcards" element={<Flashcards />} />
         </Routes>
       </Suspense>
     </Layout>

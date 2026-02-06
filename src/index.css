@@ -3,6 +3,43 @@
 /* Class-based dark mode so the toggle can control it */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* color-scheme so native UI (scrollbars, form controls) matches theme */
+:root {
+  color-scheme: light;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+@theme {
+  /* Light mode – cream backgrounds, warm neutrals */
+  --color-warm-bg: #faf8f5;
+  --color-warm-surface: #ffffff;
+  --color-warm-border: #e7e2db;
+  --color-warm-text: #1c1917;
+  --color-warm-muted: #57534e;
+  --color-warm-accent: #b45309;
+  --color-warm-accent-hover: #92400e;
+  --color-warm-accent-subtle: #fef3c7;
+  --color-warm-hover: #f5f0e8;
+}
+
+.dark {
+  @theme {
+    /* Dark mode – warm charcoal, elevated surfaces, lighter hover */
+    --color-warm-bg: #1c1917;
+    --color-warm-surface: #292524;
+    --color-warm-border: #44403c;
+    --color-warm-text: #fafaf9;
+    --color-warm-muted: #a8a29e;
+    --color-warm-accent: #f59e0b;
+    --color-warm-accent-hover: #d97706;
+    --color-warm-accent-subtle: #78350f;
+    --color-warm-hover: #44403c;
+  }
+}
+
 body {
   margin: 0;
   min-width: 320px;

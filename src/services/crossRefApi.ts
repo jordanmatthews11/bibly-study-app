@@ -1,3 +1,5 @@
+import { validateBookChapter } from '../utils/validation'
+
 const BASE = import.meta.env.VITE_BIBLE_API_BASE ?? 'https://bible.helloao.org/api'
 const DATASET = 'open-cross-ref'
 
@@ -30,6 +32,7 @@ export async function getCrossReferences(
   bookId: string,
   chapterNum: number
 ): Promise<CrossRefChapter> {
+  validateBookChapter(bookId, chapterNum)
   return fetchJson<CrossRefChapter>(
     `${BASE}/d/${DATASET}/${bookId}/${chapterNum}.json`
   )

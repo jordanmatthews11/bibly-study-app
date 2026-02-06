@@ -1,5 +1,15 @@
 import { useParams, Link } from 'react-router-dom'
 import { getCharacterById } from '../services/characterApi'
+import { formatReference, sortReferences } from '../utils/formatReference'
+import type { BibleCharacterReference } from '../types/character'
+
+function refKey(ref: BibleCharacterReference): string {
+  return `${ref.bookId}-${ref.chapter}-${ref.verse}`
+}
+
+function linkToVerse(ref: BibleCharacterReference): string {
+  return `/bible/${ref.bookId}/${ref.chapter}${ref.verse != null ? `#v${ref.verse}` : ''}`
+}
 
 export default function CharacterDetail() {
   const { id } = useParams<{ id: string }>()
@@ -8,7 +18,7 @@ export default function CharacterDetail() {
   if (!id) {
     return (
       <div className="p-6">
-        <Link to="/characters" className="text-stone-600 underline dark:text-stone-400">
+        <Link to="/characters" className="text-warm-muted underline">
           Back to Characters
         </Link>
       </div>
@@ -18,10 +28,10 @@ export default function CharacterDetail() {
   if (!character) {
     return (
       <div className="mx-auto max-w-2xl px-4 py-6">
-        <p className="mb-4 text-stone-700 dark:text-stone-300">
+        <p className="mb-4 text-warm-text">
           Character not found.
         </p>
-        <Link to="/characters" className="text-stone-600 underline dark:text-stone-400">
+        <Link to="/characters" className="text-warm-muted underline">
           Back to Characters
         </Link>
       </div>
@@ -29,40 +39,104 @@ export default function CharacterDetail() {
   }
 
   const ref = character.reference
+  const allPassages: BibleCharacterReference[] = []
+  if (ref) allPassages.push(ref)
+  if (character.passages) {
+    for (const p of character.passages) {
+      if (!ref || refKey(p) !== refKey(ref)) allPassages.push(p)
+    }
+  }
+  const sortedPassages = sortReferences(allPassages)
+  const storyBlocks = character.story ?? character.content
+  const hasSignificance = character.significance?.length
+  const hasLessons = character.lessons?.length
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
       <nav className="mb-4">
-        <Link to="/characters" className="text-stone-600 underline dark:text-stone-400">
+        <Link to="/characters" className="text-warm-muted underline">
           Characters
         </Link>
       </nav>
       <header className="mb-6">
-        <h1 className="text-2xl font-semibold text-stone-900 dark:text-stone-100">
+        <h1 className="text-2xl font-semibold text-warm-text">
           {character.name}
         </h1>
         {ref && (
           <div className="mt-2 flex flex-wrap items-center gap-2">
-            <span className="text-sm text-stone-500 dark:text-stone-400">
-              Key reference: {ref.bookId} {ref.chapter}:{ref.verse}
-              {ref.endVerse && ref.endVerse !== ref.verse ? `–${ref.endVerse}` : ''}
+            <span className="text-sm text-warm-muted">
+              Key reference: {formatReference(ref)}
             </span>
             <Link
-              to={`/bible/${ref.bookId}/${ref.chapter}${ref.verse ? `#v${ref.verse}` : ''}`}
-              className="rounded border border-stone-300 bg-white px-3 py-1.5 text-sm font-medium hover:bg-stone-50 dark:border-stone-600 dark:bg-stone-800 dark:hover:bg-stone-700"
+              to={linkToVerse(ref)}
+              className="rounded border border-warm-border bg-warm-surface px-3 py-1.5 text-sm font-medium hover:bg-warm-hover"
             >
               Open in Bible
             </Link>
           </div>
         )}
       </header>
-      <article className="prose prose-stone dark:prose-invert max-w-none">
-        {character.content.map((paragraph, i) => (
-          <p key={i} className="whitespace-pre-wrap text-stone-700 dark:text-stone-300">
-            {paragraph}
-          </p>
-        ))}
-      </article>
+
+      {sortedPassages.length > 0 && (
+        <section className="mb-6">
+          <h2 className="mb-2 text-lg font-medium text-warm-text">
+            Found in
+          </h2>
+          <ul className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+            {sortedPassages.map((p) => (
+              <li key={refKey(p)}>
+                <Link
+                  to={linkToVerse(p)}
+                  className="text-warm-muted underline hover:text-warm-text"
+                >
+                  {formatReference(p)}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {storyBlocks.length > 0 && (
+        <section className="mb-6">
+          <h2 className="mb-2 text-lg font-medium text-warm-text">
+            Story
+          </h2>
+          <div className="space-y-2">
+            {storyBlocks.map((paragraph, i) => (
+              <p key={i} className="whitespace-pre-wrap text-warm-text">
+                {paragraph}
+              </p>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {hasSignificance ? (
+        <section className="mb-6">
+          <h2 className="mb-2 text-lg font-medium text-warm-text">
+            What makes them special
+          </h2>
+          <ul className="list-disc space-y-1 pl-5 text-warm-text">
+            {character.significance!.map((item, i) => (
+              <li key={i}>{item}</li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      {hasLessons ? (
+        <section className="mb-6">
+          <h2 className="mb-2 text-lg font-medium text-warm-text">
+            What can be learned
+          </h2>
+          <ul className="list-disc space-y-1 pl-5 text-warm-text">
+            {character.lessons!.map((item, i) => (
+              <li key={i}>{item}</li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
     </div>
   )
 }

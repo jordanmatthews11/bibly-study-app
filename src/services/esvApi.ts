@@ -1,9 +1,12 @@
 /**
  * ESV API (https://api.esv.org/) – requires an API key from https://api.esv.org/account/
  * Terms: https://api.esv.org/ – non-commercial use, include copyright and link to esv.org.
+ *
+ * Passage requests go through the serverless proxy (/api/esv) so the API key stays on the server.
+ * For local dev with ESV, run `vercel dev` and set ESV_API_KEY in .env (no VITE_ prefix).
  */
 
-const ESV_BASE = 'https://api.esv.org'
+const ESV_PROXY = '/api/esv'
 
 export interface ESVPassageResponse {
   query: string
@@ -110,30 +113,24 @@ export const ESV_BOOKS: { id: string; commonName: string; order: number; numberO
   { id: 'REV', commonName: 'Revelation', order: 66, numberOfChapters: 22 },
 ]
 
-function getApiKey(): string | undefined {
-  return import.meta.env.VITE_ESV_API_KEY as string | undefined
-}
-
+/** Client cannot know if server has key; always allow attempt. Key-not-configured shows as 502 from proxy. */
 export function hasEsvApiKey(): boolean {
-  return Boolean(getApiKey()?.trim())
+  return true
 }
 
 /**
- * Fetch passage text from ESV API.
+ * Fetch passage text via serverless proxy (key stays on server).
  * @see https://api.esv.org/docs/passage-text/
  */
 export async function getEsvPassage(query: string): Promise<ESVPassageResponse> {
-  const key = getApiKey()?.trim()
-  if (!key) throw new Error('ESV API key not set. Add VITE_ESV_API_KEY to your .env. Get a key at https://api.esv.org/account/')
-  const url = `${ESV_BASE}/v3/passage/text/?q=${encodeURIComponent(query)}&include-verse-numbers=true&include-headings=true&include-footnotes=false&include-short-copyright=true`
-  const res = await fetch(url, {
-    headers: { Authorization: `Token ${key}` },
-  })
+  const url = `${ESV_PROXY}?q=${encodeURIComponent(query)}`
+  const res = await fetch(url)
+  const text = await res.text()
   if (!res.ok) {
-    const text = await res.text()
-    throw new Error(`ESV API error ${res.status}: ${text}`)
+    const msg = res.status === 502 ? 'ESV API key not configured on server. Set ESV_API_KEY in Vercel (or .env for vercel dev).' : text
+    throw new Error(`ESV API error ${res.status}: ${msg}`)
   }
-  return res.json() as Promise<ESVPassageResponse>
+  return JSON.parse(text) as Promise<ESVPassageResponse>
 }
 
 export interface ESVChapterResult {

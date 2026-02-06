@@ -63,27 +63,27 @@ export default function VerseActions({
           if (b) removeBookmark(b.id)
           else addBookmark(bookId, chapter, verse)
         }}
-        className="rounded p-1 hover:bg-stone-200 dark:hover:bg-stone-700"
+        className="rounded p-1 hover:bg-warm-hover"
         title={bookmarked ? 'Remove bookmark' : 'Bookmark'}
         aria-label={bookmarked ? 'Remove bookmark' : 'Bookmark verse'}
       >
         {bookmarked ? (
           <span className="text-amber-500" aria-hidden>★</span>
         ) : (
-          <span className="text-stone-400" aria-hidden>☆</span>
+          <span className="text-warm-muted" aria-hidden>☆</span>
         )}
       </button>
       <div className="relative">
         <button
           type="button"
           onClick={() => setShowHighlight((o) => !o)}
-          className="rounded p-1 hover:bg-stone-200 dark:hover:bg-stone-700"
+          className="rounded p-1 hover:bg-warm-hover"
           title="Highlight"
           aria-label="Highlight verse"
           aria-expanded={showHighlight}
         >
           <span
-            className="inline-block h-4 w-4 rounded border border-stone-400"
+            className="inline-block h-4 w-4 rounded border border-warm-muted"
             style={
               highlight
                 ? {
@@ -101,13 +101,13 @@ export default function VerseActions({
           />
         </button>
         {showHighlight && (
-          <div className="absolute right-0 top-full z-10 mt-1 flex gap-1 rounded border border-stone-200 bg-white p-2 shadow-lg dark:border-stone-700 dark:bg-stone-800">
+          <div className="absolute right-0 top-full z-10 mt-1 flex gap-1 rounded border border-warm-border bg-warm-surface p-2 shadow-lg">
             {HIGHLIGHT_COLORS.map((c) => (
               <button
                 key={c.id}
                 type="button"
                 title={c.label}
-                className={`h-6 w-6 rounded border border-stone-300 ${c.class}`}
+                className={`h-6 w-6 rounded border border-warm-border ${c.class}`}
                 onClick={() => {
                   if (highlight?.color === c.id) removeHighlight(bookId, chapter, verse)
                   else addHighlight(bookId, chapter, verse, c.id)
@@ -118,7 +118,7 @@ export default function VerseActions({
             {highlight && (
               <button
                 type="button"
-                className="rounded px-2 py-1 text-xs text-stone-500 hover:bg-stone-100 dark:hover:bg-stone-700"
+                className="rounded px-2 py-1 text-xs text-warm-muted hover:bg-warm-hover"
                 onClick={() => {
                   removeHighlight(bookId, chapter, verse)
                   setShowHighlight(false)
@@ -134,35 +134,35 @@ export default function VerseActions({
         <button
           type="button"
           onClick={() => setShowNote((o) => !o)}
-          className="rounded p-1 hover:bg-stone-200 dark:hover:bg-stone-700"
+          className="rounded p-1 hover:bg-warm-hover"
           title="Note"
           aria-label="Add or edit note"
           aria-expanded={showNote}
         >
-          <span className={note ? 'text-amber-600 dark:text-amber-400' : 'text-stone-400'}>
+          <span className={note ? 'text-amber-600 dark:text-amber-400' : 'text-warm-muted'}>
             📝
           </span>
         </button>
         {showNote && (
-          <div className="absolute right-0 top-full z-10 mt-1 w-64 rounded border border-stone-200 bg-white p-2 shadow-lg dark:border-stone-700 dark:bg-stone-800">
+          <div className="absolute right-0 top-full z-10 mt-1 w-64 rounded border border-warm-border bg-warm-surface p-2 shadow-lg">
             <textarea
               value={noteContent}
               onChange={(e) => setNoteContent(e.target.value)}
               placeholder="Your note…"
-              className="mb-2 w-full rounded border border-stone-300 px-2 py-1 text-sm dark:border-stone-600 dark:bg-stone-900 dark:text-stone-100"
+              className="mb-2 w-full rounded border border-warm-border px-2 py-1 text-sm text-warm-text bg-warm-surface"
               rows={3}
             />
             <div className="flex justify-end gap-1">
               <button
                 type="button"
-                className="rounded px-2 py-1 text-sm text-stone-600 hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-700"
+                className="rounded px-2 py-1 text-sm text-warm-muted hover:bg-warm-hover"
                 onClick={() => setShowNote(false)}
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className="rounded bg-stone-800 px-2 py-1 text-sm text-white hover:bg-stone-700 dark:bg-stone-700 dark:hover:bg-stone-600"
+                className="rounded bg-warm-accent px-2 py-1 text-sm text-white hover:bg-warm-accent-hover"
                 onClick={() => {
                   if (noteContent.trim()) addNote(bookId, chapter, verse, noteContent.trim())
                   else removeNote(bookId, chapter, verse)

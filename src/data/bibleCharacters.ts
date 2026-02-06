@@ -5,15 +5,45 @@ export const bibleCharacters: BibleCharacter[] = [
     id: 'abraham',
     name: 'Abraham',
     reference: { bookId: 'GEN', chapter: 12, verse: 1 },
-    content: [
-      'Abraham (originally Abram) is called the father of faith. God called him to leave Ur and go to Canaan, promising to make him a great nation and bless all peoples through him (Genesis 12:1–3).',
-      'He is known for his willingness to offer Isaac on Mount Moriah, and for his hospitality and intercession. The covenant with Abraham is central to both the Old and New Testaments.',
+    passages: [
+      { bookId: 'GEN', chapter: 12, verse: 1, endVerse: 9 },
+      { bookId: 'GEN', chapter: 15, verse: 1 },
+      { bookId: 'GEN', chapter: 17, verse: 1 },
+      { bookId: 'GEN', chapter: 18, verse: 1 },
+      { bookId: 'GEN', chapter: 22, verse: 1, endVerse: 19 },
+      { bookId: 'GEN', chapter: 24, verse: 1 },
     ],
+    story: [
+      'Abraham (originally Abram) is called the father of faith. God called him to leave Ur and go to Canaan, promising to make him a great nation and bless all peoples through him (Genesis 12:1–3).',
+      'He received the covenant of circumcision, interceded for Sodom, and was willing to offer Isaac on Mount Moriah—God provided a ram. He sent his servant to find a wife for Isaac (Rebekah). The covenant with Abraham is central to both the Old and New Testaments.',
+    ],
+    significance: [
+      'Father of the faithful; God’s covenant with him extends to all who believe (Galatians 3).',
+      'His offspring is ultimately Christ; through him all nations are blessed.',
+      'Justified by faith (Genesis 15:6; Romans 4); model of hospitality (Hebrews 13:2).',
+    ],
+    lessons: [
+      'Obedience often requires leaving the familiar; God’s call is worth the cost.',
+      'Faith and obedience go together; God keeps his promises even when the path is hard.',
+      'Intercession and hospitality are marks of those who trust God.',
+    ],
+    content: [],
   },
   {
     id: 'moses',
     name: 'Moses',
     reference: { bookId: 'EXO', chapter: 3, verse: 4 },
+    passages: [
+      { bookId: 'EXO', chapter: 2, verse: 1 },
+      { bookId: 'EXO', chapter: 3, verse: 1 },
+      { bookId: 'EXO', chapter: 4, verse: 1 },
+      { bookId: 'EXO', chapter: 14, verse: 1 },
+      { bookId: 'EXO', chapter: 19, verse: 1 },
+      { bookId: 'EXO', chapter: 20, verse: 1 },
+      { bookId: 'EXO', chapter: 32, verse: 1 },
+      { bookId: 'NUM', chapter: 20, verse: 1 },
+      { bookId: 'DEU', chapter: 34, verse: 1 },
+    ],
     content: [
       'Moses was chosen by God to lead Israel out of Egypt. He encountered God at the burning bush (Exodus 3) and received the law on Mount Sinai.',
       'He is regarded as the great lawgiver and prophet; Deuteronomy records his final speeches before Israel entered the Promised Land. He did not enter Canaan himself but saw it from Mount Nebo.',
@@ -32,6 +62,15 @@ export const bibleCharacters: BibleCharacter[] = [
     id: 'david',
     name: 'David',
     reference: { bookId: '1SA', chapter: 16, verse: 13 },
+    passages: [
+      { bookId: '1SA', chapter: 16, verse: 1 },
+      { bookId: '1SA', chapter: 17, verse: 1 },
+      { bookId: '1SA', chapter: 24, verse: 1 },
+      { bookId: '2SA', chapter: 7, verse: 1 },
+      { bookId: '2SA', chapter: 11, verse: 1 },
+      { bookId: '2SA', chapter: 12, verse: 1 },
+      { bookId: 'PSA', chapter: 51, verse: 1 },
+    ],
     content: [
       'David was Israel’s second king, a man after God’s own heart. He was anointed by Samuel while still a shepherd, defeated Goliath, and united the kingdom.',
       'He established Jerusalem as the capital and desired to build the temple. Despite his sins, he repented; the Messiah is promised as the Son of David.',
@@ -95,10 +134,33 @@ export const bibleCharacters: BibleCharacter[] = [
     id: 'jesus',
     name: 'Jesus',
     reference: { bookId: 'MAT', chapter: 3, verse: 17 },
-    content: [
+    passages: [
+      { bookId: 'MAT', chapter: 3, verse: 13 },
+      { bookId: 'MAT', chapter: 4, verse: 1 },
+      { bookId: 'MAT', chapter: 5, verse: 1 },
+      { bookId: 'MAT', chapter: 26, verse: 1 },
+      { bookId: 'MAT', chapter: 27, verse: 1 },
+      { bookId: 'MAT', chapter: 28, verse: 1 },
+      { bookId: 'JHN', chapter: 1, verse: 1 },
+      { bookId: 'JHN', chapter: 11, verse: 1 },
+      { bookId: 'JHN', chapter: 19, verse: 1 },
+      { bookId: 'JHN', chapter: 20, verse: 1 },
+    ],
+    story: [
       'Jesus Christ is the Son of God and the center of Scripture. He was born in Bethlehem, ministered in Galilee and Judea, taught with authority, performed signs and wonders, and was crucified and raised from the dead.',
       'The Gospels present him as Messiah, Lord, and Savior. His death and resurrection are the basis of the Christian faith; he will return in glory to judge and to reign.',
     ],
+    significance: [
+      'Fully God and fully man; the promised Messiah and King of Israel.',
+      'His death atones for sin; his resurrection secures eternal life for believers.',
+      'He is the way, the truth, and the life; no one comes to the Father except through him.',
+    ],
+    lessons: [
+      'Trust and follow him; he is the only Savior and Lord.',
+      'Love God and neighbor; his teaching and life show us how to live.',
+      'Hope in his return and the coming kingdom; live in readiness and faithfulness.',
+    ],
+    content: [],
   },
   {
     id: 'peter',
@@ -113,6 +175,16 @@ export const bibleCharacters: BibleCharacter[] = [
     id: 'paul',
     name: 'Paul',
     reference: { bookId: 'ACT', chapter: 9, verse: 15 },
+    passages: [
+      { bookId: 'ACT', chapter: 9, verse: 1 },
+      { bookId: 'ACT', chapter: 13, verse: 1 },
+      { bookId: 'ACT', chapter: 16, verse: 1 },
+      { bookId: 'ACT', chapter: 22, verse: 1 },
+      { bookId: 'ACT', chapter: 26, verse: 1 },
+      { bookId: 'ROM', chapter: 1, verse: 1 },
+      { bookId: 'GAL', chapter: 1, verse: 1 },
+      { bookId: 'PHP', chapter: 1, verse: 1 },
+    ],
     content: [
       'Paul (Saul of Tarsus) was a Pharisee who persecuted the church until he met the risen Christ on the road to Damascus. He became the apostle to the Gentiles and planted churches across the Roman world.',
       'He wrote many of the New Testament letters (Romans, Corinthians, Galatians, Ephesians, etc.) and taught that salvation is by grace through faith in Christ. He was imprisoned and martyred for the gospel.',
@@ -496,6 +568,402 @@ export const bibleCharacters: BibleCharacter[] = [
     content: [
       'Titus was a Gentile companion of Paul, trusted with difficult tasks. Paul sent him to Corinth to address the collection and disorder and later left him in Crete to appoint elders.',
       'Paul’s letter to Titus instructs him to teach sound doctrine and to train believers in good works. He is a model of a reliable minister and church planter.',
+    ],
+  },
+  // —— Additional prominent characters ——
+  {
+    id: 'caleb',
+    name: 'Caleb',
+    reference: { bookId: 'NUM', chapter: 13, verse: 6 },
+    passages: [
+      { bookId: 'NUM', chapter: 13, verse: 6 },
+      { bookId: 'NUM', chapter: 14, verse: 24 },
+      { bookId: 'JOS', chapter: 14, verse: 6 },
+    ],
+    content: [
+      'Caleb was one of the twelve spies; with Joshua he urged Israel to take the land. God said he had a different spirit and would enter Canaan.',
+      'He received Hebron as his inheritance and drove out the Anakim. He is a model of wholehearted faith and perseverance into old age.',
+    ],
+  },
+  {
+    id: 'samson',
+    name: 'Samson',
+    reference: { bookId: 'JDG', chapter: 13, verse: 24 },
+    passages: [
+      { bookId: 'JDG', chapter: 13, verse: 1 },
+      { bookId: 'JDG', chapter: 14, verse: 1 },
+      { bookId: 'JDG', chapter: 16, verse: 1 },
+    ],
+    content: [
+      'Samson was a Nazirite judge, given great strength by God. He fought the Philistines but was compromised by Delilah, who learned the secret of his strength.',
+      'Blinded and imprisoned, he was brought to the temple where he prayed and brought down the house, killing many Philistines. He is listed in Hebrews 11 but also a warning about moral compromise.',
+    ],
+  },
+  {
+    id: 'delilah',
+    name: 'Delilah',
+    reference: { bookId: 'JDG', chapter: 16, verse: 4 },
+    content: [
+      'Delilah was a woman from the Valley of Sorek whom the Philistine lords bribed to learn the source of Samson’s strength. She pressed him until he revealed his Nazirite vow and hair.',
+      'She had his hair cut while he slept; his strength left him and he was captured. She is a cautionary figure of betrayal and temptation.',
+    ],
+  },
+  {
+    id: 'hannah',
+    name: 'Hannah',
+    reference: { bookId: '1SA', chapter: 1, verse: 2 },
+    passages: [
+      { bookId: '1SA', chapter: 1, verse: 1 },
+      { bookId: '1SA', chapter: 2, verse: 1 },
+    ],
+    content: [
+      'Hannah was the wife of Elkanah; she was barren and tormented by Peninnah. She prayed at Shiloh and vowed to give her son to the Lord.',
+      'She bore Samuel and dedicated him to the tabernacle. Her song (1 Samuel 2) anticipates Mary’s Magnificat and celebrates God who exalts the lowly.',
+    ],
+  },
+  {
+    id: 'elizabeth',
+    name: 'Elizabeth',
+    reference: { bookId: 'LUK', chapter: 1, verse: 5 },
+    passages: [
+      { bookId: 'LUK', chapter: 1, verse: 5 },
+      { bookId: 'LUK', chapter: 1, verse: 39 },
+    ],
+    content: [
+      'Elizabeth was the wife of Zechariah and a relative of Mary; she was righteous and barren into old age. The angel told Zechariah she would bear John the Baptist.',
+      'When Mary visited, Elizabeth was filled with the Holy Spirit and blessed her and the child. She is an example of faith and joy at God’s fulfillment.',
+    ],
+  },
+  {
+    id: 'zechariah-father-of-john',
+    name: 'Zechariah (father of John)',
+    reference: { bookId: 'LUK', chapter: 1, verse: 5 },
+    passages: [
+      { bookId: 'LUK', chapter: 1, verse: 5 },
+      { bookId: 'LUK', chapter: 1, verse: 67 },
+    ],
+    content: [
+      'Zechariah was a priest of the division of Abijah; he and Elizabeth were righteous but childless. In the temple an angel told him Elizabeth would bear a son named John.',
+      'He doubted and was made mute until John’s birth. He then prophesied in the Benedictus. He is a picture of God’s mercy and the forerunner’s role.',
+    ],
+  },
+  {
+    id: 'anna',
+    name: 'Anna',
+    reference: { bookId: 'LUK', chapter: 2, verse: 36 },
+    content: [
+      'Anna was a prophetess, of the tribe of Asher; she was widowed after seven years and spent decades in the temple fasting and praying.',
+      'When Jesus was brought to the temple as an infant, she gave thanks and spoke of him to all who were waiting for redemption. She is a model of devotion and witness.',
+    ],
+  },
+  {
+    id: 'simeon',
+    name: 'Simeon',
+    reference: { bookId: 'LUK', chapter: 2, verse: 25 },
+    content: [
+      'Simeon was righteous and devout, waiting for the consolation of Israel; the Holy Spirit had revealed he would not die before seeing the Lord’s Christ.',
+      'He took the infant Jesus in his arms and said the Nunc Dimittis: “Lord, now you are letting your servant depart in peace.” He and Anna testify to Jesus as the promised one.',
+    ],
+  },
+  {
+    id: 'pilate',
+    name: 'Pontius Pilate',
+    reference: { bookId: 'MAT', chapter: 27, verse: 2 },
+    passages: [
+      { bookId: 'MAT', chapter: 27, verse: 2 },
+      { bookId: 'JHN', chapter: 18, verse: 28 },
+      { bookId: 'JHN', chapter: 19, verse: 1 },
+    ],
+    content: [
+      'Pilate was the Roman governor of Judea who tried Jesus. He found no guilt in him but yielded to the crowd and had him scourged and handed over for crucifixion.',
+      'He asked “What is truth?” and washed his hands of Jesus’ blood. He is a warning against moral cowardice and political expediency over justice.',
+    ],
+  },
+  {
+    id: 'herod-antipas',
+    name: 'Herod Antipas',
+    reference: { bookId: 'MAT', chapter: 14, verse: 1 },
+    passages: [
+      { bookId: 'MAT', chapter: 14, verse: 1 },
+      { bookId: 'LUK', chapter: 23, verse: 7 },
+    ],
+    content: [
+      'Herod Antipas was tetrarch of Galilee and Perea; he had John the Baptist beheaded at the request of Herodias’s daughter. He also questioned Jesus at his trial.',
+      'Jesus called him “that fox.” He is an example of someone who was curious about spiritual things but unrepentant and complicit in injustice.',
+    ],
+  },
+  {
+    id: 'herod-the-great',
+    name: 'Herod the Great',
+    reference: { bookId: 'MAT', chapter: 2, verse: 1 },
+    content: [
+      'Herod the Great was king of Judea when Jesus was born. The magi asked where the king of the Jews was; he tried to use them to find the child and then ordered the massacre of the infants in Bethlehem.',
+      'He was a builder (including the temple) but ruthless. His violence fulfills the lament of Rachel weeping for her children (Jeremiah 31).',
+    ],
+  },
+  {
+    id: 'joseph-of-arimathea',
+    name: 'Joseph of Arimathea',
+    reference: { bookId: 'MAT', chapter: 27, verse: 57 },
+    content: [
+      'Joseph of Arimathea was a rich man and disciple of Jesus who had not consented to the Sanhedrin’s decision. After the crucifixion he asked Pilate for Jesus’ body.',
+      'He wrapped it in a clean linen shroud and laid it in his own new tomb. He is remembered for his courage and devotion in burying Jesus.',
+    ],
+  },
+  {
+    id: 'james-brother-of-jesus',
+    name: 'James (brother of Jesus)',
+    reference: { bookId: 'ACT', chapter: 15, verse: 13 },
+    passages: [
+      { bookId: 'ACT', chapter: 15, verse: 13 },
+      { bookId: 'JAS', chapter: 1, verse: 1 },
+    ],
+    content: [
+      'James was a brother of Jesus who did not believe during his ministry but became a leader of the Jerusalem church after the resurrection. He presided at the Jerusalem council.',
+      'He is traditionally identified as the author of the letter of James, which emphasizes faith and works. He was martyred by being thrown from the temple pinnacle.',
+    ],
+  },
+  {
+    id: 'philip-apostle',
+    name: 'Philip (apostle)',
+    reference: { bookId: 'JHN', chapter: 1, verse: 43 },
+    passages: [
+      { bookId: 'JHN', chapter: 1, verse: 43 },
+      { bookId: 'JHN', chapter: 6, verse: 5 },
+      { bookId: 'JHN', chapter: 14, verse: 8 },
+    ],
+    content: [
+      'Philip was one of the twelve; he brought Nathanael to Jesus and was asked how to feed the five thousand. At the Last Supper he said, “Lord, show us the Father.”',
+      'Jesus answered that whoever has seen him has seen the Father. He is an example of bringing others to Christ and of honest questioning.',
+    ],
+  },
+  {
+    id: 'judas-iscariot',
+    name: 'Judas Iscariot',
+    reference: { bookId: 'MAT', chapter: 26, verse: 14 },
+    passages: [
+      { bookId: 'MAT', chapter: 26, verse: 14 },
+      { bookId: 'JHN', chapter: 13, verse: 21 },
+      { bookId: 'JHN', chapter: 18, verse: 1 },
+    ],
+    content: [
+      'Judas was one of the twelve who betrayed Jesus for thirty pieces of silver. He led the crowd to Gethsemane and identified Jesus with a kiss.',
+      'He later regretted his deed and returned the money but went and hanged himself. He is a sobering warning about hypocrisy and the love of money.',
+    ],
+  },
+  {
+    id: 'rebekah',
+    name: 'Rebekah',
+    reference: { bookId: 'GEN', chapter: 24, verse: 15 },
+    passages: [
+      { bookId: 'GEN', chapter: 24, verse: 1 },
+      { bookId: 'GEN', chapter: 25, verse: 21 },
+      { bookId: 'GEN', chapter: 27, verse: 1 },
+    ],
+    content: [
+      'Rebekah was the wife of Isaac, chosen by Abraham’s servant at the well. She bore Jacob and Esau and favored Jacob; she helped him obtain the blessing from Isaac.',
+      'Her favoritism and deception brought family strife. She is an example of both God’s providence in marriage and the damage of playing favorites.',
+    ],
+  },
+  {
+    id: 'rachel',
+    name: 'Rachel',
+    reference: { bookId: 'GEN', chapter: 29, verse: 6 },
+    passages: [
+      { bookId: 'GEN', chapter: 29, verse: 1 },
+      { bookId: 'GEN', chapter: 30, verse: 1 },
+      { bookId: 'GEN', chapter: 35, verse: 16 },
+    ],
+    content: [
+      'Rachel was Jacob’s beloved wife, the mother of Joseph and Benjamin. Jacob served Laban fourteen years for her. She was barren for a time and later died giving birth to Benjamin.',
+      'She is remembered as the beloved of Jacob and the mother of the tribes of Joseph and Benjamin. Jeremiah pictures Rachel weeping for her children (Matthew 2).',
+    ],
+  },
+  {
+    id: 'hagar',
+    name: 'Hagar',
+    reference: { bookId: 'GEN', chapter: 16, verse: 1 },
+    passages: [
+      { bookId: 'GEN', chapter: 16, verse: 1 },
+      { bookId: 'GEN', chapter: 21, verse: 9 },
+    ],
+    content: [
+      'Hagar was Sarah’s Egyptian servant; she bore Ishmael to Abraham at Sarah’s urging. When mistreated she fled and the angel of the Lord met her at a well and promised blessing for her son.',
+      'Later she and Ishmael were sent away; God again provided for them. She is the only woman in Scripture to whom God speaks directly by name; her story shows God’s care for the marginalized.',
+    ],
+  },
+  {
+    id: 'lot',
+    name: 'Lot',
+    reference: { bookId: 'GEN', chapter: 13, verse: 5 },
+    passages: [
+      { bookId: 'GEN', chapter: 13, verse: 1 },
+      { bookId: 'GEN', chapter: 19, verse: 1 },
+    ],
+    content: [
+      'Lot was Abraham’s nephew who went with him to Canaan and then chose the well-watered plain of Jordan, settling near Sodom. He was righteous but distressed by the wickedness around him.',
+      'Angels rescued him and his family from Sodom’s destruction; his wife looked back and became a pillar of salt. He is a warning about compromise with the world and the cost of wrong choices.',
+    ],
+  },
+  {
+    id: 'rahab',
+    name: 'Rahab',
+    reference: { bookId: 'JOS', chapter: 2, verse: 1 },
+    passages: [
+      { bookId: 'JOS', chapter: 2, verse: 1 },
+      { bookId: 'JOS', chapter: 6, verse: 22 },
+      { bookId: 'HEB', chapter: 11, verse: 31 },
+    ],
+    content: [
+      'Rahab was a Canaanite woman in Jericho who hid the Israelite spies and asked for her family to be spared when the city fell. She tied a scarlet cord in her window as a sign.',
+      'She and her household were saved and she is listed in the genealogy of Jesus (Matthew 1). She is an example of faith and of God’s grace to outsiders who believe.',
+    ],
+  },
+  {
+    id: 'jael',
+    name: 'Jael',
+    reference: { bookId: 'JDG', chapter: 4, verse: 17 },
+    content: [
+      'Jael was the wife of Heber the Kenite. When Sisera fled from Barak’s army he came to her tent. She gave him milk, covered him, and then drove a tent peg through his temple while he slept.',
+      'Deborah’s song celebrates her as “most blessed of women.” She is a striking example of God using an unexpected person to bring down an enemy.',
+    ],
+  },
+  {
+    id: 'eli',
+    name: 'Eli',
+    reference: { bookId: '1SA', chapter: 1, verse: 9 },
+    passages: [
+      { bookId: '1SA', chapter: 1, verse: 9 },
+      { bookId: '1SA', chapter: 2, verse: 12 },
+      { bookId: '1SA', chapter: 4, verse: 1 },
+    ],
+    content: [
+      'Eli was the high priest at Shiloh when Samuel was a boy. He was weak in disciplining his sons Hophni and Phinehas, who did great wickedness. God warned him through a man of God and through young Samuel.',
+      'The ark was lost in battle and his sons died; when Eli heard the news he fell and died. His house would not be atoned by sacrifice forever. He is a warning about failing to restrain evil in one’s household.',
+    ],
+  },
+  {
+    id: 'jonathan',
+    name: 'Jonathan',
+    reference: { bookId: '1SA', chapter: 18, verse: 1 },
+    passages: [
+      { bookId: '1SA', chapter: 18, verse: 1 },
+      { bookId: '1SA', chapter: 20, verse: 1 },
+      { bookId: '1SA', chapter: 31, verse: 2 },
+    ],
+    content: [
+      'Jonathan was Saul’s son and a valiant warrior. His soul was knit to David’s; he made a covenant with him and protected him from Saul. He recognized that David would be king.',
+      'He died with Saul on Mount Gilboa. He is remembered as a loyal friend who put God’s anointed and the kingdom ahead of his own claim.',
+    ],
+  },
+  {
+    id: 'goliath',
+    name: 'Goliath',
+    reference: { bookId: '1SA', chapter: 17, verse: 4 },
+    content: [
+      'Goliath was a giant champion of the Philistines from Gath, over nine feet tall. He challenged Israel to send a man to fight him for forty days.',
+      'David accepted the challenge and struck him down with a stone from his sling. Goliath is a symbol of the enemy that seems insurmountable but falls before faith in God.',
+    ],
+  },
+  {
+    id: 'nebuchadnezzar',
+    name: 'Nebuchadnezzar',
+    reference: { bookId: 'DAN', chapter: 1, verse: 1 },
+    passages: [
+      { bookId: 'DAN', chapter: 1, verse: 1 },
+      { bookId: 'DAN', chapter: 2, verse: 1 },
+      { bookId: 'DAN', chapter: 3, verse: 1 },
+      { bookId: 'DAN', chapter: 4, verse: 1 },
+    ],
+    content: [
+      'Nebuchadnezzar was king of Babylon who besieged Jerusalem and took exiles including Daniel. He had dreams that Daniel interpreted and set up a golden image for all to worship.',
+      'Shadrach, Meshach, and Abednego refused and were delivered from the furnace. Nebuchadnezzar was humbled until he acknowledged the Most High; he is an example of God’s sovereignty over proud rulers.',
+    ],
+  },
+  {
+    id: 'shadrach-meshach-abednego',
+    name: 'Shadrach, Meshach, and Abednego',
+    reference: { bookId: 'DAN', chapter: 3, verse: 12 },
+    passages: [
+      { bookId: 'DAN', chapter: 1, verse: 6 },
+      { bookId: 'DAN', chapter: 3, verse: 1 },
+    ],
+    content: [
+      'Shadrach, Meshach, and Abednego were Jewish youths (Hananiah, Mishael, Azariah) who served in Nebuchadnezzar’s court. They refused to worship the golden image and were cast into the fiery furnace.',
+      'They were unharmed and a fourth figure like a son of the gods appeared with them. They are models of courage and loyalty to God in the face of persecution.',
+    ],
+  },
+  {
+    id: 'mordecai',
+    name: 'Mordecai',
+    reference: { bookId: 'EST', chapter: 2, verse: 5 },
+    passages: [
+      { bookId: 'EST', chapter: 2, verse: 5 },
+      { bookId: 'EST', chapter: 4, verse: 1 },
+      { bookId: 'EST', chapter: 6, verse: 1 },
+    ],
+    content: [
+      'Mordecai was a Jew who raised his cousin Esther and sat at the king’s gate. He refused to bow to Haman and uncovered the plot to destroy the Jews. He urged Esther to act: “Who knows whether you have not come to the kingdom for such a time as this?”',
+      'He was honored by the king and given Haman’s position. He is a model of faithfulness, courage, and God’s providential care for his people.',
+    ],
+  },
+  {
+    id: 'haman',
+    name: 'Haman',
+    reference: { bookId: 'EST', chapter: 3, verse: 1 },
+    passages: [
+      { bookId: 'EST', chapter: 3, verse: 1 },
+      { bookId: 'EST', chapter: 5, verse: 1 },
+      { bookId: 'EST', chapter: 7, verse: 1 },
+    ],
+    content: [
+      'Haman was the Agagite elevated by Ahasuerus who sought to destroy all the Jews because Mordecai would not bow to him. He had a gallows built for Mordecai.',
+      'Esther exposed his plot at a banquet; the king had him hanged on his own gallows. He is an example of pride and hatred that leads to one’s own downfall.',
+    ],
+  },
+  {
+    id: 'zacchaeus',
+    name: 'Zacchaeus',
+    reference: { bookId: 'LUK', chapter: 19, verse: 2 },
+    content: [
+      'Zacchaeus was a chief tax collector in Jericho, short in stature. He climbed a sycamore tree to see Jesus, who called him down and said he would stay at his house.',
+      'Zacchaeus repented and promised to give half his goods to the poor and restore fourfold to anyone he had defrauded. Jesus said salvation had come to his house. He is an example of seeking Jesus and responding with repentance and generosity.',
+    ],
+  },
+  {
+    id: 'cornelius',
+    name: 'Cornelius',
+    reference: { bookId: 'ACT', chapter: 10, verse: 1 },
+    passages: [
+      { bookId: 'ACT', chapter: 10, verse: 1 },
+      { bookId: 'ACT', chapter: 11, verse: 1 },
+    ],
+    content: [
+      'Cornelius was a centurion in Caesarea, a devout God-fearer who gave alms and prayed. An angel told him to send for Peter. When Peter came he and his household heard the gospel and received the Holy Spirit.',
+      'This was the first clear conversion of Gentiles without prior Judaism; it confirmed that God had opened the door to the nations. He is a model of devotion and readiness to receive the word.',
+    ],
+  },
+  {
+    id: 'lydia',
+    name: 'Lydia',
+    reference: { bookId: 'ACT', chapter: 16, verse: 14 },
+    content: [
+      'Lydia was a dealer in purple cloth from Thyatira, a worshiper of God, in Philippi. The Lord opened her heart to pay attention to Paul’s message; she and her household were baptized.',
+      'She urged Paul and his companions to stay at her house. She is the first recorded European convert and an example of hospitality and faithful response to the gospel.',
+    ],
+  },
+  {
+    id: 'silas',
+    name: 'Silas',
+    reference: { bookId: 'ACT', chapter: 15, verse: 22 },
+    passages: [
+      { bookId: 'ACT', chapter: 15, verse: 22 },
+      { bookId: 'ACT', chapter: 16, verse: 19 },
+      { bookId: 'ACT', chapter: 17, verse: 1 },
+    ],
+    content: [
+      'Silas was a leading brother sent with Paul and Barnabas to deliver the Jerusalem council letter. He accompanied Paul on the second missionary journey after the split with Barnabas.',
+      'He was imprisoned with Paul in Philippi and they sang at midnight; the jailer was converted. He is a model of a steady fellow worker and co-author of letters (1–2 Thessalonians).',
     ],
   },
 ]

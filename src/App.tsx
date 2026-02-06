@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import Layout from './components/Layout'
+import { PassageChatProvider } from './context/PassageChatContext'
 
 const Bible = lazy(() => import('./pages/Bible'))
 const BibleChapter = lazy(() => import('./pages/BibleChapter'))
@@ -11,7 +12,8 @@ const Study = lazy(() => import('./pages/Study'))
 
 function App() {
   return (
-    <Layout>
+    <PassageChatProvider>
+      <Layout>
       <Suspense fallback={<div className="p-6 text-center">Loading…</div>}>
         <Routes>
           <Route path="/" element={<Navigate to="/bible" replace />} />
@@ -24,6 +26,7 @@ function App() {
         </Routes>
       </Suspense>
     </Layout>
+    </PassageChatProvider>
   )
 }
 

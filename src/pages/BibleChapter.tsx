@@ -1,11 +1,20 @@
+import { useState, useEffect, useMemo } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import type { ESVChapterResult } from '../services/esvApi'
 import { getEsvChapter, hasEsvApiKey, ESV_BOOK_NAMES } from '../services/esvApi'
+import { parseEsvVerses } from '../utils/parseEsvVerses'
+import { usePassageChat } from '../context/PassageChatContext'
 
 export default function BibleChapter() {
   const { bookId, chapter } = useParams<{ bookId: string; chapter: string }>()
   const chapterNum = chapter ? parseInt(chapter, 10) : 1
+  const [selectedVerses, setSelectedVerses] = useState<Set<number>>(() => new Set())
+  const { setPassageContext } = usePassageChat()
+
+  useEffect(() => {
+    setSelectedVerses(new Set())
+  }, [bookId, chapterNum])
 
   const { data, isLoading, error } = useQuery<ESVChapterResult>({
     queryKey: ['chapter', 'ESV', bookId, chapterNum],
@@ -48,6 +57,27 @@ export default function BibleChapter() {
   if (!data) return null
 
   const esvData = data
+  const verses = useMemo(() => parseEsvVerses(esvData.passageText), [esvData.passageText])
+
+  useEffect(() => {
+    setPassageContext({
+      bookId: esvData.bookId,
+      bookName: esvData.bookName,
+      chapter: esvData.chapter,
+      parsedVerses: verses,
+      selectedVerseNumbers: Array.from(selectedVerses),
+    })
+    return () => setPassageContext(null)
+  }, [esvData.bookId, esvData.bookName, esvData.chapter, verses, selectedVerses, setPassageContext])
+
+  const toggleVerse = (num: number) => {
+    setSelectedVerses((prev) => {
+      const next = new Set(prev)
+      if (next.has(num)) next.delete(num)
+      else next.add(num)
+      return next
+    })
+  }
 
   return (
     <div className="min-h-[calc(100vh-56px)]">
@@ -85,9 +115,40 @@ export default function BibleChapter() {
           </div>
         </header>
         <article className="prose prose-stone dark:prose-invert max-w-none">
-          <pre className="whitespace-pre-wrap font-sans text-inherit leading-relaxed">
-            {esvData.passageText}
-          </pre>
+          {verses.length > 0 ? (
+            <div className="space-y-1 font-sans text-inherit leading-relaxed">
+              {verses.map((v) => {
+                const selected = selectedVerses.has(v.number)
+                return (
+                  <div
+                    key={v.number}
+                    id={`v${v.number}`}
+                    data-verse={v.number}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => toggleVerse(v.number)}
+                    onKeyDown={(e) => e.key === 'Enter' && toggleVerse(v.number)}
+                    className={`cursor-pointer rounded px-2 py-1.5 transition-colors ${
+                      selected
+                        ? 'bg-amber-200/80 ring-1 ring-amber-400 dark:bg-amber-900/40 dark:ring-amber-600'
+                        : 'hover:bg-stone-100 dark:hover:bg-stone-800'
+                    }`}
+                    aria-pressed={selected}
+                    aria-label={`Verse ${v.number}${selected ? ', selected' : ''}`}
+                  >
+                    <span className="mr-2 font-medium text-stone-500 dark:text-stone-400">
+                      [{v.number}]
+                    </span>
+                    <span className="whitespace-pre-wrap">{v.text}</span>
+                  </div>
+                )
+              })}
+            </div>
+          ) : (
+            <pre className="whitespace-pre-wrap font-sans text-inherit leading-relaxed">
+              {esvData.passageText}
+            </pre>
+          )}
         </article>
         <footer className="mt-8 space-y-2 border-t border-stone-200 pt-4 dark:border-stone-700">
           <div className="flex justify-between text-sm text-stone-500 dark:text-stone-400">

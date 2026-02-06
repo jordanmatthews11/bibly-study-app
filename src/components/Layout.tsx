@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useTheme } from '../context/ThemeContext'
+import ChatPanel from './ChatPanel'
 
 const nav = [
   { to: '/bible', label: 'Bible' },
@@ -103,6 +104,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       </aside>
 
       <main className="min-h-[calc(100vh-56px)]">{children}</main>
+      <ChatPanel />
     </div>
   )
 }

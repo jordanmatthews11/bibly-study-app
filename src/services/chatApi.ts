@@ -22,10 +22,10 @@ export interface ChatContext {
 
 export async function sendChatMessage(context: ChatContext, userMessage: string): Promise<string> {
   // Placeholder: no external API. Return a message that acknowledges context.
-  const hasPassage = context.passageRef != null
-  const refStr = hasPassage
-    ? `${context.passageRef.bookName} ${context.passageRef.chapter}`
-    : 'none'
+  const refStr =
+    context.passageRef != null
+      ? `${context.passageRef.bookName} ${context.passageRef.chapter}`
+      : 'none'
   const selectedCount = context.selectedVerses.length
 
   if (!userMessage.trim()) {

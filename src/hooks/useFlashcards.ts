@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
-import type { Card, ReviewState, UserProgress, ReviewRating, BadgeId } from '../types/flashcards'
+import type { Card, ReviewState, UserProgress, ReviewRating } from '../types/flashcards'
 import { getStarterKitById } from '../data/starterKits'
 
 const STORAGE_KEY = 'bible-study-app-flashcards-v1'

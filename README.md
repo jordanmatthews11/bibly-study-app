@@ -5,6 +5,7 @@ A web-first Bible Study app for reading and studying the Bible in the ESV: brows
 ## Features
 
 - **Bible reader** – Browse books (OT/NT), open chapters, read ESV text. Previous/next chapter navigation. Requires an ESV API key.
+- **Bible chat** – Ask questions about the passage you have open. Powered by ChatGPT (OpenAI). Requires an OpenAI API key.
 - **Search** – Verse-by-verse search is not available for ESV yet; use the Bible reader to browse.
 - **Characters** – Browse a curated database of Bible characters with short profiles and key references. Open key references in the Bible reader.
 - **Study** – Bookmark verses, highlight with colors, add notes. All stored in localStorage. Study page lists bookmarks, highlights, and notes with links to passages.
@@ -19,10 +20,10 @@ A web-first Bible Study app for reading and studying the Bible in the ESV: brows
 
 ```bash
 npm install
-npm run dev
+vercel dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173).
+Open [http://localhost:5173](http://localhost:5173). Use `vercel dev` (not `npm run dev`) so the API routes (/api/esv, /api/chat) are available. Set ESV_API_KEY and OPENAI_API_KEY in `.env`.
 
 ## Build
 
@@ -33,18 +34,21 @@ npm run preview
 
 ## Environment
 
-Copy `.env.example` to `.env` and set your ESV API key.
+Copy `.env.example` to `.env` and set your API keys.
 
-- **VITE_ESV_API_KEY** – Required. Get a free key at [api.esv.org/account](https://api.esv.org/account/). Restart the dev server after adding it.
+- **ESV_API_KEY** – Required for Bible reader. Get a free key at [api.esv.org/account](https://api.esv.org/account/). Set on server only (Vercel env or `.env` for `vercel dev`).
+- **OPENAI_API_KEY** – Required for Bible chat. Get a key at [platform.openai.com/api-keys](https://platform.openai.com/api-keys). Set on server only (Vercel env or `.env` for `vercel dev`).
 
 ## Deploy on Vercel
 
 1. Push this repo to GitHub (or GitLab/Bitbucket).
 2. Go to [vercel.com](https://vercel.com), sign in, and click **Add New** → **Project**. Import your repo.
 3. In **Environment Variables**, add:
-   - **Name:** `VITE_ESV_API_KEY`
-   - **Value:** your ESV API key  
-   (Add it for Production, Preview, and Development if you use Vercel previews.)
+   - **Name:** `ESV_API_KEY`  
+     **Value:** your ESV API key
+   - **Name:** `OPENAI_API_KEY`  
+     **Value:** your OpenAI API key  
+   (Add them for Production, Preview, and Development if you use Vercel previews.)
 4. Click **Deploy**. Vercel will build and host the app and give you a URL (e.g. `https://your-app.vercel.app`).
 
 To deploy from the CLI: install `vercel` (`npm i -g vercel`), run `vercel` in the project root, and add the env var in the Vercel dashboard under Project Settings → Environment Variables.

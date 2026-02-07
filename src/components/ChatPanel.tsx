@@ -56,8 +56,9 @@ export default function ChatPanel() {
     setMessages((prev) => [...prev, userMsg])
     setSending(true)
     const apiContext = buildChatContext(passageContext)
+    const previousMessages = messages.map((m) => ({ role: m.role, content: m.content }))
     try {
-      const reply = await sendChatMessage(apiContext, text)
+      const reply = await sendChatMessage(apiContext, text, previousMessages)
       setMessages((prev) => [
         ...prev,
         { id: crypto.randomUUID(), role: 'assistant', content: reply },

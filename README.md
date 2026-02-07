@@ -9,6 +9,7 @@ A web-first Bible Study app for reading and studying the Bible in the ESV: brows
 - **Search** – Verse-by-verse search is not available for ESV yet; use the Bible reader to browse.
 - **Characters** – Browse a curated database of Bible characters with short profiles and key references. Open key references in the Bible reader.
 - **Study** – Bookmark verses, highlight with colors, add notes. All stored in localStorage. Study page lists bookmarks, highlights, and notes with links to passages.
+- **Support** – Optional donations/support via the Support link. Use an external URL (Ko-fi, PayPal.me, etc.) and/or Stripe for one-time payments.
 
 ## Tech stack
 
@@ -38,6 +39,8 @@ Copy `.env.example` to `.env` and set your API keys.
 
 - **ESV_API_KEY** – Required for Bible reader. Get a free key at [api.esv.org/account](https://api.esv.org/account/). Set on server only (Vercel env or `.env` for `vercel dev`).
 - **OPENAI_API_KEY** – Required for Bible chat. Get a key at [platform.openai.com/api-keys](https://platform.openai.com/api-keys). Set on server only (Vercel env or `.env` for `vercel dev`).
+- **VITE_SUPPORT_URL** – Optional. External support page (e.g. Ko-fi, Buy Me a Coffee, PayPal.me). Shown on the Support (/donate) page.
+- **STRIPE_SECRET_KEY** – Optional. For one-time payments on the Support page. Set on server only. Get keys at [dashboard.stripe.com/apikeys](https://dashboard.stripe.com/apikeys).
 
 ## Deploy on Vercel
 

@@ -13,16 +13,16 @@
 }
 
 @theme {
-  /* Light mode – warm cream/beige, clearly distinct from pure white */
-  --color-warm-bg: #f5f0e8;
-  --color-warm-surface: #ffffff;
-  --color-warm-border: #e5e0d8;
-  --color-warm-text: #171412;
-  --color-warm-muted: #57534e;
-  --color-warm-accent: #b45309;
-  --color-warm-accent-hover: #92400e;
-  --color-warm-accent-subtle: #fef3c7;
-  --color-warm-hover: #f7f4ef;
+  /* Light mode – warm earth tones, natural greens */
+  --color-warm-bg: #f5f3ef;
+  --color-warm-surface: #fefdfb;
+  --color-warm-border: #e4e1d9;
+  --color-warm-text: #1c1917;
+  --color-warm-muted: #5c5752;
+  --color-warm-accent: #3d7a52;
+  --color-warm-accent-hover: #2d5a3a;
+  --color-warm-accent-subtle: #e8f0ea;
+  --color-warm-hover: #eef2ed;
 }
 
 .dark {

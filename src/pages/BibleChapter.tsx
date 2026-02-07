@@ -7,12 +7,22 @@ import { parseEsvVerses } from '../utils/parseEsvVerses'
 import { isBookIdValid, isChapterNumValid } from '../utils/validation'
 import { usePassageChat } from '../context/PassageChatContext'
 import { useFlashcards } from '../hooks/useFlashcards'
+import { getTranslations } from '../services/bibleApi'
+import { getChapter } from '../services/bibleApi'
+import { getVerseText } from '../types/bible'
 
 export default function BibleChapter() {
   const { bookId, chapter } = useParams<{ bookId: string; chapter: string }>()
   const chapterNum = chapter ? parseInt(chapter, 10) : 1
   const [selectedVerses, setSelectedVerses] = useState<Set<number>>(() => new Set())
-  const { setPassageContext } = usePassageChat()
+  const [compareOpen, setCompareOpen] = useState(false)
+  const [speaking, setSpeaking] = useState(false)
+  const [compareData, setCompareData] = useState<
+    { id: string; name: string; verses: { number: number; text: string }[] }[]
+  >([])
+  const [compareLoading, setCompareLoading] = useState(false)
+  const [compareError, setCompareError] = useState<string | null>(null)
+  const { setPassageContext, setChatOpen, setPendingPrompt } = usePassageChat()
   const { addCards } = useFlashcards()
 
   useEffect(() => {
@@ -101,6 +111,92 @@ export default function BibleChapter() {
     ])
     setSelectedVerses(new Set())
   }
+
+  const handleWhyDoesItMatter = () => {
+    setPendingPrompt(
+      'Why does this passage matter? How does it fit in the bigger picture of this book and chapter?'
+    )
+    setChatOpen(true)
+  }
+
+  const selectedVerseText = useMemo(() => {
+    if (!data) return ''
+    const sorted = Array.from(selectedVerses).sort((a, b) => a - b)
+    return sorted
+      .map((n) => {
+        const v = verses.find((x) => x.number === n)
+        return v ? `${data.bookName} ${data.chapter}:${n} ${v.text}` : ''
+      })
+      .filter(Boolean)
+      .join('\n\n')
+  }, [data, selectedVerses, verses])
+
+  const handleReadToMe = () => {
+    if (typeof window === 'undefined' || !window.speechSynthesis || !selectedVerseText) return
+    const utterance = new SpeechSynthesisUtterance(selectedVerseText)
+    utterance.rate = 0.9
+    window.speechSynthesis.cancel()
+    window.speechSynthesis.speak(utterance)
+    setSpeaking(true)
+    utterance.onend = () => setSpeaking(false)
+  }
+
+  const handleStopReading = () => {
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      window.speechSynthesis.cancel()
+      setSpeaking(false)
+    }
+  }
+
+  useEffect(() => {
+    if (!compareOpen || !data || !bookId || Number.isNaN(chapterNum) || selectedVerses.size === 0) {
+      return
+    }
+    const sorted = Array.from(selectedVerses).sort((a, b) => a - b)
+    const esvEntries = sorted.map((n) => {
+      const v = verses.find((x) => x.number === n)
+      return { number: n, text: v?.text ?? '' }
+    })
+    setCompareLoading(true)
+    setCompareError(null)
+    setCompareData([{ id: 'ESV', name: 'English Standard Version', verses: esvEntries }])
+    getTranslations()
+      .then(({ translations }) => {
+        const others = translations
+          .filter((t) => t.id !== 'ESV')
+          .slice(0, 3)
+        return Promise.all(
+          others.map(async (t) => {
+            try {
+              const ch = await getChapter(t.id, data.bookId, data.chapter)
+              const versesForTranslation = sorted.map((num) => ({
+                number: num,
+                text: getVerseText(ch.chapter, num),
+              }))
+              return { id: t.id, name: t.name ?? t.shortName, verses: versesForTranslation }
+            } catch {
+              return null
+            }
+          })
+        )
+      })
+      .then((results) => {
+        const valid = results.filter(
+          (r): r is { id: string; name: string; verses: { number: number; text: string }[] } =>
+            r != null
+        )
+        setCompareData((prev) => [...prev, ...valid])
+      })
+      .catch((err) => setCompareError(err instanceof Error ? err.message : 'Failed to load translations'))
+      .finally(() => setCompareLoading(false))
+  }, [compareOpen, data, bookId, chapterNum, selectedVerses, verses])
+
+  useEffect(() => {
+    if (!compareOpen) {
+      setCompareData([])
+      setCompareError(null)
+    }
+  }, [compareOpen])
 
   if (!bookId || Number.isNaN(chapterNum)) {
     return (
@@ -214,32 +310,123 @@ export default function BibleChapter() {
           )}
         </article>
         {selectedVerses.size > 0 && (
-          <div className="mt-4 flex flex-wrap items-center gap-2 rounded-lg border border-amber-300 bg-amber-50 p-3 dark:border-amber-600 dark:bg-amber-900/20">
-            <span className="text-sm font-medium text-warm-text">
-              Add to flashcards
-            </span>
-            <button
-              type="button"
-              onClick={handleAddEachVerse}
-              className="rounded border border-amber-400 bg-amber-100 px-3 py-1.5 text-sm font-medium text-warm-text hover:bg-amber-200 dark:border-amber-500 dark:bg-amber-800/50 dark:hover:bg-amber-800"
-            >
-              Add each verse
-            </button>
-            <button
-              type="button"
-              onClick={handleAddAsOneCard}
-              className="rounded border border-amber-400 bg-amber-100 px-3 py-1.5 text-sm font-medium text-warm-text hover:bg-amber-200 dark:border-amber-500 dark:bg-amber-800/50 dark:hover:bg-amber-800"
-            >
-              Add as one card
-            </button>
-            <Link
-              to="/flashcards"
-              className="ml-auto text-sm text-amber-700 underline dark:text-amber-400"
-            >
-              Open Flashcards
-            </Link>
+          <div className="mt-4 rounded-lg border border-warm-border bg-warm-surface p-4">
+            <p className="mb-3 text-sm font-medium text-warm-text">
+              Selected verses – choose an action
+            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={handleAddAsOneCard}
+                className="rounded bg-warm-accent px-3 py-2 text-sm font-medium text-white hover:opacity-90"
+              >
+                Memorize with Flashcards
+              </button>
+              <button
+                type="button"
+                onClick={handleWhyDoesItMatter}
+                className="rounded border border-warm-border bg-warm-bg px-3 py-2 text-sm font-medium text-warm-text hover:bg-warm-hover"
+              >
+                Why does it matter?
+              </button>
+              <button
+                type="button"
+                onClick={handleReadToMe}
+                disabled={!selectedVerseText}
+                className="rounded border border-warm-border bg-warm-bg px-3 py-2 text-sm font-medium text-warm-text hover:bg-warm-hover disabled:opacity-50"
+              >
+                Read to me
+              </button>
+              {speaking && (
+                <button
+                  type="button"
+                  onClick={handleStopReading}
+                  className="rounded border border-red-300 bg-red-50 px-3 py-2 text-sm font-medium text-red-700 dark:border-red-600 dark:bg-red-900/20 dark:text-red-300"
+                >
+                  Stop
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => setCompareOpen(true)}
+                className="rounded border border-warm-border bg-warm-bg px-3 py-2 text-sm font-medium text-warm-text hover:bg-warm-hover"
+              >
+                Compare to other translations
+              </button>
+            </div>
+            <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-warm-border pt-3">
+              <span className="text-xs text-warm-muted">Flashcards:</span>
+              <button
+                type="button"
+                onClick={handleAddEachVerse}
+                className="rounded border border-warm-border px-2 py-1 text-xs font-medium text-warm-muted hover:bg-warm-hover"
+              >
+                Add each verse
+              </button>
+              <button
+                type="button"
+                onClick={handleAddAsOneCard}
+                className="rounded border border-warm-border px-2 py-1 text-xs font-medium text-warm-muted hover:bg-warm-hover"
+              >
+                Add as one card
+              </button>
+              <Link
+                to="/flashcards"
+                className="text-xs text-warm-accent underline"
+              >
+                Open Flashcards
+              </Link>
+            </div>
           </div>
         )}
+        {compareOpen && (
+          <>
+            <div
+              className="fixed inset-0 z-40 bg-black/50"
+              role="button"
+              tabIndex={0}
+              onClick={() => setCompareOpen(false)}
+              onKeyDown={(e) => e.key === 'Escape' && setCompareOpen(false)}
+              aria-label="Close"
+            />
+            <div className="fixed left-1/2 top-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-lg border border-warm-border bg-warm-surface p-4 shadow-xl">
+              <div className="mb-3 flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-warm-text">Compare to other translations</h2>
+                <button
+                  type="button"
+                  onClick={() => setCompareOpen(false)}
+                  className="rounded p-1 text-warm-muted hover:bg-warm-hover hover:text-warm-text"
+                  aria-label="Close"
+                >
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              {compareLoading && compareData.length <= 1 && (
+                <p className="text-sm text-warm-muted">Loading other translations…</p>
+              )}
+              {compareError && (
+                <p className="text-sm text-red-600 dark:text-red-400">{compareError}</p>
+              )}
+              <div className="max-h-[60vh] space-y-4 overflow-y-auto">
+                {compareData.map(({ id, name, verses: transVerses }) => (
+                  <div key={id} className="rounded border border-warm-border p-3">
+                    <p className="mb-2 text-sm font-medium text-warm-text">{name}</p>
+                    <div className="space-y-1 text-sm text-warm-muted">
+                      {transVerses.map(({ number, text }) => (
+                        <p key={number}>
+                          <span className="font-medium text-warm-text">[{number}]</span> {text}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+
         <footer className="mt-8 space-y-2 border-t border-warm-border pt-4">
           <div className="flex justify-between text-sm text-warm-muted">
             {esvData.prev ? (

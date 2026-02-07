@@ -37,8 +37,7 @@ function buildChatContext(
 }
 
 export default function ChatPanel() {
-  const { passageContext } = usePassageChat()
-  const [open, setOpen] = useState(false)
+  const { passageContext, chatOpen, setChatOpen, pendingPrompt, setPendingPrompt } = usePassageChat()
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [input, setInput] = useState('')
   const [sending, setSending] = useState(false)
@@ -47,6 +46,35 @@ export default function ChatPanel() {
   useEffect(() => {
     if (listRef.current) listRef.current.scrollTop = listRef.current.scrollHeight
   }, [messages])
+
+  useEffect(() => {
+    if (!chatOpen || !pendingPrompt || sending) return
+    const text = pendingPrompt.trim()
+    if (!text) {
+      setPendingPrompt(null)
+      return
+    }
+    setPendingPrompt(null)
+    const userMsg: ChatMessage = { id: crypto.randomUUID(), role: 'user', content: text }
+    setMessages((prev) => [...prev, userMsg])
+    setSending(true)
+    const apiContext = buildChatContext(passageContext)
+    const previousMessages = messages.map((m) => ({ role: m.role, content: m.content }))
+    sendChatMessage(apiContext, text, previousMessages)
+      .then((reply) => {
+        setMessages((prev) => [
+          ...prev,
+          { id: crypto.randomUUID(), role: 'assistant', content: reply },
+        ])
+      })
+      .catch(() => {
+        setMessages((prev) => [
+          ...prev,
+          { id: crypto.randomUUID(), role: 'assistant', content: 'Something went wrong. Try again.' },
+        ])
+      })
+      .finally(() => setSending(false))
+  }, [chatOpen, pendingPrompt, passageContext, setPendingPrompt])
 
   const handleSend = async () => {
     const text = input.trim()
@@ -77,9 +105,9 @@ export default function ChatPanel() {
     <>
       <button
         type="button"
-        onClick={() => setOpen((o) => !o)}
+        onClick={() => setChatOpen(!chatOpen)}
         className="fixed bottom-6 right-6 z-30 flex h-12 w-12 items-center justify-center rounded-full bg-warm-accent text-white shadow-lg hover:bg-warm-accent-hover"
-        aria-label={open ? 'Close chat' : 'Open Bible chat'}
+        aria-label={chatOpen ? 'Close chat' : 'Open Bible chat'}
         title="Bible chat"
       >
         <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -92,7 +120,7 @@ export default function ChatPanel() {
         </svg>
       </button>
 
-      {open && (
+      {chatOpen && (
         <div
           className="fixed bottom-24 right-6 z-30 flex w-full max-w-md flex-col overflow-hidden rounded-lg border border-warm-border bg-warm-surface shadow-xl"
           style={{ height: 'min(420px, 60vh)' }}

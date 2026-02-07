@@ -5,10 +5,10 @@ const STRIPE_ENABLED = import.meta.env.VITE_SUPPORT_STRIPE_ENABLED === 'true'
 
 function getSupportLabel(url: string): string {
   const lower = url.toLowerCase()
-  if (lower.includes('venmo')) return 'Support via Venmo'
-  if (lower.includes('ko-fi')) return 'Support via Ko-fi'
-  if (lower.includes('paypal')) return 'Support via PayPal'
-  return 'Send support'
+  if (lower.includes('venmo')) return 'Donate via Venmo'
+  if (lower.includes('ko-fi')) return 'Donate via Ko-fi'
+  if (lower.includes('paypal')) return 'Donate via PayPal'
+  return 'Donate'
 }
 
 export default function Donate() {
@@ -58,7 +58,7 @@ export default function Donate() {
 
   return (
     <div className="mx-auto max-w-lg px-4 py-6">
-      <h1 className="mb-2 text-2xl font-semibold text-warm-text">Support the site</h1>
+      <h1 className="mb-2 text-2xl font-semibold text-warm-text">Donations</h1>
       <p className="mb-6 text-warm-muted">
         One-time support helps keep this Bible study app free. This is not a tax-deductible donation to a charity.
       </p>
@@ -113,7 +113,7 @@ export default function Donate() {
           disabled={loading || effectiveCents == null || effectiveCents < 100}
           className="rounded bg-warm-accent px-4 py-2 font-medium text-white hover:opacity-90 disabled:opacity-50"
         >
-          {loading ? 'Redirecting…' : effectiveCents != null && effectiveCents >= 100 ? `Support $${(effectiveCents / 100).toFixed(2)}` : 'Support'}
+          {loading ? 'Redirecting…' : effectiveCents != null && effectiveCents >= 100 ? `Donate $${(effectiveCents / 100).toFixed(2)}` : 'Donate'}
         </button>
         </div>
       )}

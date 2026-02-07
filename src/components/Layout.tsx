@@ -9,7 +9,7 @@ const nav = [
   { to: '/characters', label: 'Characters' },
   { to: '/study', label: 'Study' },
   { to: '/flashcards', label: 'Flashcards' },
-  { to: '/donate', label: 'Support' },
+  { to: '/donate', label: 'Donations' },
 ]
 
 export default function Layout({ children }: { children: ReactNode }) {

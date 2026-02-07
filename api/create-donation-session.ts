@@ -73,8 +73,8 @@ export async function POST(request: Request): Promise<Response> {
             currency: 'usd',
             unit_amount: amount_cents,
             product_data: {
-              name: 'Support Bible Study',
-              description: 'One-time support for the Bible study app.',
+              name: 'Donation to Bible Study',
+              description: 'One-time donation for the Bible study app.',
             },
           },
         },

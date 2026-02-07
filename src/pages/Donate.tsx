@@ -1,6 +1,15 @@
 import { useState } from 'react'
 
 const SUPPORT_URL = import.meta.env.VITE_SUPPORT_URL?.trim() || ''
+const STRIPE_ENABLED = import.meta.env.VITE_SUPPORT_STRIPE_ENABLED === 'true'
+
+function getSupportLabel(url: string): string {
+  const lower = url.toLowerCase()
+  if (lower.includes('venmo')) return 'Support via Venmo'
+  if (lower.includes('ko-fi')) return 'Support via Ko-fi'
+  if (lower.includes('paypal')) return 'Support via PayPal'
+  return 'Send support'
+}
 
 export default function Donate() {
   const [customAmount, setCustomAmount] = useState('')
@@ -68,16 +77,19 @@ export default function Donate() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded bg-warm-accent px-4 py-2 font-medium text-white hover:opacity-90"
           >
-            Support via Ko-fi / PayPal / other
+            {getSupportLabel(SUPPORT_URL)}
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
             </svg>
           </a>
-          <p className="mt-3 text-sm text-warm-muted">Or use a one-time payment below.</p>
+          {STRIPE_ENABLED && (
+            <p className="mt-3 text-sm text-warm-muted">Or use a one-time payment below.</p>
+          )}
         </div>
       )}
 
-      <div className="rounded border border-warm-border bg-warm-surface p-4">
+      {STRIPE_ENABLED && (
+        <div className="rounded border border-warm-border bg-warm-surface p-4">
         <p className="mb-3 text-sm font-medium text-warm-text">One-time payment</p>
         <div className="mb-4">
           <label htmlFor="custom-amount" className="mb-1 block text-sm text-warm-muted">
@@ -103,11 +115,12 @@ export default function Donate() {
         >
           {loading ? 'Redirecting…' : effectiveCents != null && effectiveCents >= 100 ? `Support $${(effectiveCents / 100).toFixed(2)}` : 'Support'}
         </button>
-      </div>
+        </div>
+      )}
 
       {!SUPPORT_URL && import.meta.env.DEV && (
         <p className="mt-4 text-sm text-warm-muted">
-          Optional: set VITE_SUPPORT_URL to link to Ko-fi, PayPal.me, or another platform. Add STRIPE_SECRET_KEY on the server for one-time payments above.
+          Optional: set VITE_SUPPORT_URL (e.g. Venmo, Ko-fi, PayPal). Set VITE_SUPPORT_STRIPE_ENABLED=true and STRIPE_SECRET_KEY on the server to show one-time payments.
         </p>
       )}
     </div>

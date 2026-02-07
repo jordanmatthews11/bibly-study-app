@@ -39,8 +39,9 @@ Copy `.env.example` to `.env` and set your API keys.
 
 - **ESV_API_KEY** – Required for Bible reader. Get a free key at [api.esv.org/account](https://api.esv.org/account/). Set on server only (Vercel env or `.env` for `vercel dev`).
 - **OPENAI_API_KEY** – Required for Bible chat. Get a key at [platform.openai.com/api-keys](https://platform.openai.com/api-keys). Set on server only (Vercel env or `.env` for `vercel dev`).
-- **VITE_SUPPORT_URL** – Optional. External support page (e.g. Ko-fi, Buy Me a Coffee, PayPal.me). Shown on the Support (/donate) page.
-- **STRIPE_SECRET_KEY** – Optional. For one-time payments on the Support page. Set on server only. Get keys at [dashboard.stripe.com/apikeys](https://dashboard.stripe.com/apikeys).
+- **VITE_SUPPORT_URL** – Optional. External support link (e.g. Venmo, Ko-fi, PayPal). Button label is derived from the URL. Shown on the Support (/donate) page.
+- **VITE_SUPPORT_STRIPE_ENABLED** – Optional. Set to `true` to show the one-time payment (Stripe) section on the Support page. Leave unset for Venmo/external-link only.
+- **STRIPE_SECRET_KEY** – Optional. For one-time payments on the Support page. Set on server only. Requires `VITE_SUPPORT_STRIPE_ENABLED=true`. Get keys at [dashboard.stripe.com/apikeys](https://dashboard.stripe.com/apikeys).
 
 ## Deploy on Vercel
 

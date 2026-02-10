@@ -10,6 +10,7 @@ import { useFlashcards } from '../hooks/useFlashcards'
 import { getTranslations } from '../services/bibleApi'
 import { getChapter } from '../services/bibleApi'
 import { getVerseText } from '../types/bible'
+import { normalizeGreekForGlossary, getGreekGloss } from '../data/greekGlossary'
 
 const PREFERRED_TRANSLATION_IDS = ['WEB', 'BSB', 'NKJV', 'KJV', 'ASV', 'YLT']
 
@@ -629,6 +630,14 @@ export default function BibleChapter() {
                 </p>
                 <p className="text-sm text-warm-muted">
                   Transliteration: {transliterateGreek(selectedGreekWord.token)}
+                </p>
+                <p className="text-sm text-warm-muted">
+                  Meaning:{' '}
+                  {(() => {
+                    const normalized = normalizeGreekForGlossary(selectedGreekWord.token)
+                    const glosses = getGreekGloss(normalized)
+                    return glosses && glosses.length > 0 ? glosses.join(', ') : '—'
+                  })()}
                 </p>
               </div>
               <button

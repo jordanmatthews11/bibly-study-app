@@ -154,8 +154,8 @@ export default function BibleChapter() {
     if (!compareOpen || !data || !bookId || Number.isNaN(chapterNum) || selectedVerses.size === 0) {
       return
     }
-    const sorted = Array.from(selectedVerses).sort((a, b) => a - b)
-    const esvEntries = sorted.map((n) => {
+    const sortedVerseNums = Array.from(selectedVerses).sort((a, b) => a - b)
+    const esvEntries = sortedVerseNums.map((n) => {
       const v = verses.find((x) => x.number === n)
       return { number: n, text: v?.text ?? '' }
     })
@@ -165,7 +165,7 @@ export default function BibleChapter() {
     getTranslations()
       .then(({ translations }) => {
         const english = translations.filter((t) => t.language === 'eng' && t.id !== 'ESV')
-        const sorted = [...english].sort((a, b) => {
+        const sortedTranslations = [...english].sort((a, b) => {
           const ai = PREFERRED_TRANSLATION_IDS.indexOf(a.id)
           const bi = PREFERRED_TRANSLATION_IDS.indexOf(b.id)
           if (ai !== -1 && bi !== -1) return ai - bi
@@ -173,12 +173,12 @@ export default function BibleChapter() {
           if (bi !== -1) return 1
           return (a.englishName ?? a.name).localeCompare(b.englishName ?? b.name)
         })
-        const others = sorted.slice(0, 6)
+        const others = sortedTranslations.slice(0, 6)
         return Promise.all(
           others.map(async (t) => {
             try {
               const ch = await getChapter(t.id, data.bookId, data.chapter)
-              const versesForTranslation = sorted.map((num) => ({
+              const versesForTranslation = sortedVerseNums.map((num) => ({
                 number: num,
                 text: getVerseText(ch.chapter, num),
               }))

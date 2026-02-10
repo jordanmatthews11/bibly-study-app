@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import type { ESVChapterResult } from '../services/esvApi'
-import { getEsvChapter, hasEsvApiKey, ESV_BOOK_NAMES } from '../services/esvApi'
+import { getEsvChapter, hasEsvApiKey, ESV_BOOK_NAMES, ESV_BOOKS } from '../services/esvApi'
 import { parseEsvVerses } from '../utils/parseEsvVerses'
 import { isBookIdValid, isChapterNumValid } from '../utils/validation'
 import { usePassageChat } from '../context/PassageChatContext'
@@ -12,6 +12,16 @@ import { getChapter } from '../services/bibleApi'
 import { getVerseText } from '../types/bible'
 
 const PREFERRED_TRANSLATION_IDS = ['WEB', 'BSB', 'NKJV', 'KJV', 'ASV', 'YLT']
+
+const NT_BOOK_IDS = new Set(ESV_BOOKS.filter((b) => b.order >= 40).map((b) => b.id))
+
+function getGreekTranslationId(bookId: string): 'grc_sbl' | 'grc_bre' {
+  return NT_BOOK_IDS.has(bookId) ? 'grc_sbl' : 'grc_bre'
+}
+
+function getGreekTranslationLabel(bookId: string): string {
+  return NT_BOOK_IDS.has(bookId) ? 'SBL Greek NT' : 'Septuagint (LXX)'
+}
 
 export default function BibleChapter() {
   const { bookId, chapter } = useParams<{ bookId: string; chapter: string }>()
@@ -24,6 +34,14 @@ export default function BibleChapter() {
   >([])
   const [compareLoading, setCompareLoading] = useState(false)
   const [compareError, setCompareError] = useState<string | null>(null)
+  const [greekOpen, setGreekOpen] = useState(false)
+  const [greekData, setGreekData] = useState<{
+    name: string
+    verses: { number: number; text: string }[]
+    isLxx: boolean
+  } | null>(null)
+  const [greekLoading, setGreekLoading] = useState(false)
+  const [greekError, setGreekError] = useState<string | null>(null)
   const { setPassageContext, setChatOpen, setPendingPrompt } = usePassageChat()
   const { addCards } = useFlashcards()
 
@@ -207,6 +225,37 @@ export default function BibleChapter() {
     }
   }, [compareOpen])
 
+  useEffect(() => {
+    if (!greekOpen) {
+      setGreekData(null)
+      setGreekError(null)
+      return
+    }
+    if (!data || !bookId || Number.isNaN(chapterNum)) return
+    const sortedVerseNums =
+      selectedVerses.size > 0
+        ? Array.from(selectedVerses).sort((a, b) => a - b)
+        : verses.map((v) => v.number)
+    if (sortedVerseNums.length === 0) return
+    const greekId = getGreekTranslationId(data.bookId)
+    const label = getGreekTranslationLabel(data.bookId)
+    const isLxx = greekId === 'grc_bre'
+    setGreekLoading(true)
+    setGreekError(null)
+    getChapter(greekId, data.bookId, data.chapter)
+      .then((ch) => {
+        const verseEntries = sortedVerseNums.map((num) => ({
+          number: num,
+          text: getVerseText(ch.chapter, num),
+        }))
+        setGreekData({ name: label, verses: verseEntries, isLxx })
+      })
+      .catch((err) =>
+        setGreekError(err instanceof Error ? err.message : 'Greek text is not available for this passage.')
+      )
+      .finally(() => setGreekLoading(false))
+  }, [greekOpen, data, bookId, chapterNum, selectedVerses, verses])
+
   if (!bookId || Number.isNaN(chapterNum)) {
     return (
       <div className="p-6">
@@ -265,7 +314,14 @@ export default function BibleChapter() {
           <h1 className="text-2xl font-semibold text-warm-text">
             {esvData.bookName} {esvData.chapter}
           </h1>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => setGreekOpen(true)}
+              className="rounded border border-warm-border bg-warm-surface px-3 py-2 text-sm font-medium hover:bg-warm-hover"
+            >
+              See in Greek
+            </button>
             {esvData.prev && (
               <Link
                 to={`/bible/${esvData.prev.bookId}/${esvData.prev.chapter}`}
@@ -393,6 +449,13 @@ export default function BibleChapter() {
                 >
                   Compare to other translations
                 </button>
+                <button
+                  type="button"
+                  onClick={() => setGreekOpen(true)}
+                  className="rounded border border-warm-border bg-warm-bg px-3 py-2 text-sm font-medium text-warm-text hover:bg-warm-hover"
+                >
+                  See in Greek
+                </button>
               </div>
               <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-warm-border pt-3">
                 <span className="text-xs text-warm-muted">Flashcards:</span>
@@ -470,6 +533,57 @@ export default function BibleChapter() {
                 <p className="mt-3 text-xs text-warm-muted">
                   Other translations may not be available for this passage.
                 </p>
+              )}
+            </div>
+          </>
+        )}
+
+        {greekOpen && (
+          <>
+            <div
+              className="fixed inset-0 z-40 bg-black/50"
+              role="button"
+              tabIndex={0}
+              onClick={() => setGreekOpen(false)}
+              onKeyDown={(e) => e.key === 'Escape' && setGreekOpen(false)}
+              aria-label="Close"
+            />
+            <div className="fixed left-1/2 top-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-lg border border-warm-border bg-warm-surface p-4 shadow-xl">
+              <div className="mb-3 flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-warm-text">Passage in Greek</h2>
+                <button
+                  type="button"
+                  onClick={() => setGreekOpen(false)}
+                  className="rounded p-1 text-warm-muted hover:bg-warm-hover hover:text-warm-text"
+                  aria-label="Close"
+                >
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              {greekLoading && (
+                <p className="text-sm text-warm-muted">Loading Greek text…</p>
+              )}
+              {greekError && (
+                <p className="text-sm text-red-600 dark:text-red-400">{greekError}</p>
+              )}
+              {!greekLoading && greekData && (
+                <>
+                  <p className="mb-2 text-sm font-medium text-warm-text">{greekData.name}</p>
+                  {greekData.isLxx && (
+                    <p className="mb-3 text-xs text-warm-muted">
+                      From the Septuagint (LXX). Verse numbering may differ in some books.
+                    </p>
+                  )}
+                  <div className="max-h-[60vh] space-y-1 overflow-y-auto text-sm text-warm-muted font-serif">
+                    {greekData.verses.map(({ number, text }) => (
+                      <p key={number}>
+                        <span className="font-medium text-warm-text">[{number}]</span> {text}
+                      </p>
+                    ))}
+                  </div>
+                </>
               )}
             </div>
           </>

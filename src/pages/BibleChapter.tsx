@@ -11,7 +11,7 @@ import { getTranslations } from '../services/bibleApi'
 import { getChapter } from '../services/bibleApi'
 import { getVerseText } from '../types/bible'
 
-const PREFERRED_TRANSLATION_IDS = ['WEB', 'NKJV', 'KJV', 'ASV', 'YLT']
+const PREFERRED_TRANSLATION_IDS = ['WEB', 'BSB', 'NKJV', 'KJV', 'ASV', 'YLT']
 
 export default function BibleChapter() {
   const { bookId, chapter } = useParams<{ bookId: string; chapter: string }>()
@@ -173,7 +173,7 @@ export default function BibleChapter() {
           if (bi !== -1) return 1
           return (a.englishName ?? a.name).localeCompare(b.englishName ?? b.name)
         })
-        const others = sortedTranslations.slice(0, 6)
+        const others = sortedTranslations.slice(0, 12)
         return Promise.all(
           others.map(async (t) => {
             try {
@@ -466,6 +466,11 @@ export default function BibleChapter() {
                   </div>
                 ))}
               </div>
+              {!compareLoading && compareData.length <= 2 && (
+                <p className="mt-3 text-xs text-warm-muted">
+                  Other translations may not be available for this passage.
+                </p>
+              )}
             </div>
           </>
         )}

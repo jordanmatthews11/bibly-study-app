@@ -336,13 +336,15 @@ export default function BibleChapter() {
             {esvData.bookName} {esvData.chapter}
           </h1>
           <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={() => setGreekOpen((prev) => !prev)}
-              className={`rounded border px-3 py-2 text-sm font-medium ${greekOpen ? 'border-warm-accent bg-warm-accent/10 text-warm-accent' : 'border-warm-border bg-warm-surface hover:bg-warm-hover'}`}
-            >
-              {greekOpen ? 'Hide Greek' : 'See in Greek'}
-            </button>
+            {NT_BOOK_IDS.has(bookId!) && (
+              <button
+                type="button"
+                onClick={() => setGreekOpen((prev) => !prev)}
+                className={`rounded border px-3 py-2 text-sm font-medium ${greekOpen ? 'border-warm-accent bg-warm-accent/10 text-warm-accent' : 'border-warm-border bg-warm-surface hover:bg-warm-hover'}`}
+              >
+                {greekOpen ? 'Hide Greek' : 'See in Greek'}
+              </button>
+            )}
             {esvData.prev && (
               <Link
                 to={`/bible/${esvData.prev.bookId}/${esvData.prev.chapter}`}
@@ -532,13 +534,15 @@ export default function BibleChapter() {
                 >
                   Compare to other translations
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setGreekOpen((prev) => !prev)}
-                  className={`rounded border px-3 py-2 text-sm font-medium ${greekOpen ? 'border-warm-accent bg-warm-accent/10 text-warm-accent' : 'border-warm-border bg-warm-bg hover:bg-warm-hover'}`}
-                >
-                  {greekOpen ? 'Hide Greek' : 'See in Greek'}
-                </button>
+                {NT_BOOK_IDS.has(bookId!) && (
+                  <button
+                    type="button"
+                    onClick={() => setGreekOpen((prev) => !prev)}
+                    className={`rounded border px-3 py-2 text-sm font-medium ${greekOpen ? 'border-warm-accent bg-warm-accent/10 text-warm-accent' : 'border-warm-border bg-warm-bg hover:bg-warm-hover'}`}
+                  >
+                    {greekOpen ? 'Hide Greek' : 'See in Greek'}
+                  </button>
+                )}
               </div>
               <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-warm-border pt-3">
                 <span className="text-xs text-warm-muted">Flashcards:</span>

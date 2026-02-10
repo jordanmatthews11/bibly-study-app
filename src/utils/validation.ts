@@ -9,10 +9,10 @@ export const VALID_BOOK_IDS = new Set(ESV_BOOKS.map((b) => b.id))
 
 const BOOK_BY_ID = new Map(ESV_BOOKS.map((b) => [b.id, b]))
 
-/** Translation ID: ESV or alphanumeric/hyphen only, max 30 chars (no path traversal). */
+/** Translation ID: ESV or alphanumeric/hyphen/underscore only, max 30 chars (no path traversal). */
 export function isTranslationIdSafe(translationId: string): boolean {
   if (translationId === 'ESV') return true
-  return /^[a-zA-Z0-9-]{1,30}$/.test(translationId)
+  return /^[a-zA-Z0-9_-]{1,30}$/.test(translationId)
 }
 
 /** Book ID must be in the 66-book allowlist. */

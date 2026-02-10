@@ -137,7 +137,6 @@ const GLOSSARY: Record<string, string[]> = {
   χάριτος: ['of grace'],
   ἀλήθεια: ['truth'],
   ἀληθείας: ['of the truth'],
-  ἀγάπη: ['love'],
   πονηρός: ['evil', 'evil one'],
   πονηροῦ: ['of the evil one'],
   σωτήρ: ['Savior'],

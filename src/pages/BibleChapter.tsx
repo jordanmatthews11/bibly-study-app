@@ -23,6 +23,24 @@ function getGreekTranslationLabel(bookId: string): string {
   return NT_BOOK_IDS.has(bookId) ? 'SBL Greek NT' : 'Septuagint (LXX)'
 }
 
+/** Split verse text into tokens (words) for tap-to-highlight. Keeps punctuation attached. */
+function tokenizeGreekVerse(text: string): string[] {
+  return text.trim().split(/\s+/).filter(Boolean)
+}
+
+/** Simple Greek Unicode to Latin transliteration for display in word panel. */
+function transliterateGreek(word: string): string {
+  const map: Record<string, string> = {
+    α: 'a', β: 'b', γ: 'g', δ: 'd', ε: 'e', ζ: 'z', η: 'ē', θ: 'th', ι: 'i', κ: 'k', λ: 'l', μ: 'm',
+    ν: 'n', ξ: 'x', ο: 'o', π: 'p', ρ: 'r', σ: 's', ς: 's', τ: 't', υ: 'y', φ: 'ph', χ: 'ch', ψ: 'ps', ω: 'ō',
+    Α: 'A', Β: 'B', Γ: 'G', Δ: 'D', Ε: 'E', Ζ: 'Z', Η: 'Ē', Θ: 'Th', Ι: 'I', Κ: 'K', Λ: 'L', Μ: 'M',
+    Ν: 'N', Ξ: 'X', Ο: 'O', Π: 'P', Ρ: 'R', Σ: 'S', Τ: 'T', Υ: 'Y', Φ: 'Ph', Χ: 'Ch', Ψ: 'Ps', Ω: 'Ō',
+    ἀ: 'a', ἁ: 'ha', ἄ: 'a', ἅ: 'ha', ἐ: 'e', ἑ: 'he', ἔ: 'e', ἕ: 'he', ἠ: 'ē', ἡ: 'hē', ἤ: 'ē', ἥ: 'hē',
+    ἰ: 'i', ἱ: 'hi', ἴ: 'i', ἵ: 'hi', ὀ: 'o', ὁ: 'ho', ὅ: 'o', ὕ: 'hy', ὑ: 'hy', ὠ: 'ō', ὡ: 'hō', ὤ: 'ō', ὥ: 'hō',
+  }
+  return word.split('').map((c) => map[c] ?? c).join('')
+}
+
 export default function BibleChapter() {
   const { bookId, chapter } = useParams<{ bookId: string; chapter: string }>()
   const chapterNum = chapter ? parseInt(chapter, 10) : 1
@@ -42,6 +60,10 @@ export default function BibleChapter() {
   } | null>(null)
   const [greekLoading, setGreekLoading] = useState(false)
   const [greekError, setGreekError] = useState<string | null>(null)
+  const [selectedGreekWord, setSelectedGreekWord] = useState<{
+    verseNumber: number
+    token: string
+  } | null>(null)
   const { setPassageContext, setChatOpen, setPendingPrompt } = usePassageChat()
   const { addCards } = useFlashcards()
 
@@ -229,13 +251,11 @@ export default function BibleChapter() {
     if (!greekOpen) {
       setGreekData(null)
       setGreekError(null)
+      setSelectedGreekWord(null)
       return
     }
     if (!data || !bookId || Number.isNaN(chapterNum)) return
-    const sortedVerseNums =
-      selectedVerses.size > 0
-        ? Array.from(selectedVerses).sort((a, b) => a - b)
-        : verses.map((v) => v.number)
+    const sortedVerseNums = verses.map((v) => v.number)
     if (sortedVerseNums.length === 0) return
     const greekId = getGreekTranslationId(data.bookId)
     const label = getGreekTranslationLabel(data.bookId)
@@ -254,7 +274,7 @@ export default function BibleChapter() {
         setGreekError(err instanceof Error ? err.message : 'Greek text is not available for this passage.')
       )
       .finally(() => setGreekLoading(false))
-  }, [greekOpen, data, bookId, chapterNum, selectedVerses, verses])
+  }, [greekOpen, data, bookId, chapterNum, verses])
 
   if (!bookId || Number.isNaN(chapterNum)) {
     return (
@@ -298,9 +318,9 @@ export default function BibleChapter() {
 
   return (
     <div className="min-h-[calc(100vh-56px)]">
-      <div className="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-6 md:flex-row">
+      <div className={`mx-auto flex gap-6 px-4 py-6 ${greekOpen ? 'max-w-6xl flex-row' : 'max-w-5xl flex-col md:flex-row'}`}>
         <div className="min-w-0 flex-1">
-          <div className="max-w-2xl">
+          <div className={greekOpen ? '' : 'max-w-2xl'}>
         <nav className="mb-4 flex items-center gap-2 text-sm">
           <Link to="/bible" className="text-warm-muted underline">
             Bible
@@ -317,10 +337,10 @@ export default function BibleChapter() {
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
-              onClick={() => setGreekOpen(true)}
-              className="rounded border border-warm-border bg-warm-surface px-3 py-2 text-sm font-medium hover:bg-warm-hover"
+              onClick={() => setGreekOpen((prev) => !prev)}
+              className={`rounded border px-3 py-2 text-sm font-medium ${greekOpen ? 'border-warm-accent bg-warm-accent/10 text-warm-accent' : 'border-warm-border bg-warm-surface hover:bg-warm-hover'}`}
             >
-              See in Greek
+              {greekOpen ? 'Hide Greek' : 'See in Greek'}
             </button>
             {esvData.prev && (
               <Link
@@ -404,6 +424,68 @@ export default function BibleChapter() {
           </div>
         </div>
 
+        {greekOpen && (
+          <div className="min-w-0 flex-1">
+            <div className="rounded-lg border border-warm-border bg-warm-surface p-4">
+              <p className="mb-3 text-sm font-medium text-warm-text">
+                {greekData?.name ?? 'Greek'}
+                {greekData?.isLxx && (
+                  <span className="ml-2 text-xs font-normal text-warm-muted">
+                    (LXX – verse numbering may differ)
+                  </span>
+                )}
+              </p>
+              {greekLoading && <p className="text-sm text-warm-muted">Loading Greek…</p>}
+              {greekError && (
+                <p className="text-sm text-red-600 dark:text-red-400">{greekError}</p>
+              )}
+              {!greekLoading && greekData && (
+                <div className="space-y-2 font-serif text-warm-text">
+                  {verses.map((v) => {
+                    const greekVerse = greekData.verses.find((g) => g.number === v.number)
+                    const text = greekVerse?.text ?? ''
+                    const tokens = tokenizeGreekVerse(text)
+                    return (
+                      <div
+                        key={v.number}
+                        id={`greek-v${v.number}`}
+                        className="rounded px-2 py-1.5 leading-relaxed"
+                      >
+                        <span className="mr-2 text-sm font-medium text-warm-muted">[{v.number}]</span>
+                        {tokens.map((token, i) => {
+                          const isSelected =
+                            selectedGreekWord?.verseNumber === v.number && selectedGreekWord?.token === token
+                          return (
+                            <span key={`${v.number}-${i}-${token}`}>
+                              <span
+                                role="button"
+                                tabIndex={0}
+                                onClick={() => setSelectedGreekWord({ verseNumber: v.number, token })}
+                                onKeyDown={(e) =>
+                                  e.key === 'Enter' && setSelectedGreekWord({ verseNumber: v.number, token })
+                                }
+                                className={`cursor-pointer rounded px-0.5 transition-colors ${
+                                  isSelected
+                                    ? 'bg-amber-200/80 ring-1 ring-amber-400 dark:bg-amber-900/40 dark:ring-amber-600'
+                                    : 'hover:bg-warm-hover'
+                                }`}
+                                aria-label={`Greek word ${token}`}
+                              >
+                                {token}
+                              </span>
+                              {i < tokens.length - 1 ? ' ' : null}
+                            </span>
+                          )
+                        })}
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {selectedVerses.size > 0 && (
           <aside className="w-full shrink-0 md:sticky md:top-20 md:h-fit md:w-72">
             <div className="rounded-lg border border-warm-border bg-warm-surface p-4">
@@ -451,10 +533,10 @@ export default function BibleChapter() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setGreekOpen(true)}
-                  className="rounded border border-warm-border bg-warm-bg px-3 py-2 text-sm font-medium text-warm-text hover:bg-warm-hover"
+                  onClick={() => setGreekOpen((prev) => !prev)}
+                  className={`rounded border px-3 py-2 text-sm font-medium ${greekOpen ? 'border-warm-accent bg-warm-accent/10 text-warm-accent' : 'border-warm-border bg-warm-bg hover:bg-warm-hover'}`}
                 >
-                  See in Greek
+                  {greekOpen ? 'Hide Greek' : 'See in Greek'}
                 </button>
               </div>
               <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-warm-border pt-3">
@@ -538,55 +620,29 @@ export default function BibleChapter() {
           </>
         )}
 
-        {greekOpen && (
-          <>
-            <div
-              className="fixed inset-0 z-40 bg-black/50"
-              role="button"
-              tabIndex={0}
-              onClick={() => setGreekOpen(false)}
-              onKeyDown={(e) => e.key === 'Escape' && setGreekOpen(false)}
-              aria-label="Close"
-            />
-            <div className="fixed left-1/2 top-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-lg border border-warm-border bg-warm-surface p-4 shadow-xl">
-              <div className="mb-3 flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-warm-text">Passage in Greek</h2>
-                <button
-                  type="button"
-                  onClick={() => setGreekOpen(false)}
-                  className="rounded p-1 text-warm-muted hover:bg-warm-hover hover:text-warm-text"
-                  aria-label="Close"
-                >
-                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
+        {selectedGreekWord && (
+          <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-warm-border bg-warm-surface p-4 shadow-lg">
+            <div className="mx-auto flex max-w-2xl items-center justify-between gap-4">
+              <div>
+                <p className="text-sm font-medium text-warm-text">
+                  Word: <span className="font-serif">{selectedGreekWord.token}</span>
+                </p>
+                <p className="text-sm text-warm-muted">
+                  Transliteration: {transliterateGreek(selectedGreekWord.token)}
+                </p>
               </div>
-              {greekLoading && (
-                <p className="text-sm text-warm-muted">Loading Greek text…</p>
-              )}
-              {greekError && (
-                <p className="text-sm text-red-600 dark:text-red-400">{greekError}</p>
-              )}
-              {!greekLoading && greekData && (
-                <>
-                  <p className="mb-2 text-sm font-medium text-warm-text">{greekData.name}</p>
-                  {greekData.isLxx && (
-                    <p className="mb-3 text-xs text-warm-muted">
-                      From the Septuagint (LXX). Verse numbering may differ in some books.
-                    </p>
-                  )}
-                  <div className="max-h-[60vh] space-y-1 overflow-y-auto text-sm text-warm-muted font-serif">
-                    {greekData.verses.map(({ number, text }) => (
-                      <p key={number}>
-                        <span className="font-medium text-warm-text">[{number}]</span> {text}
-                      </p>
-                    ))}
-                  </div>
-                </>
-              )}
+              <button
+                type="button"
+                onClick={() => setSelectedGreekWord(null)}
+                className="rounded p-2 text-warm-muted hover:bg-warm-hover hover:text-warm-text"
+                aria-label="Close word panel"
+              >
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
-          </>
+          </div>
         )}
     </div>
   )

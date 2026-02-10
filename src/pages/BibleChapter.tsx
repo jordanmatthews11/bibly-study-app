@@ -11,6 +11,8 @@ import { getTranslations } from '../services/bibleApi'
 import { getChapter } from '../services/bibleApi'
 import { getVerseText } from '../types/bible'
 
+const PREFERRED_TRANSLATION_IDS = ['WEB', 'NKJV', 'KJV', 'ASV', 'YLT']
+
 export default function BibleChapter() {
   const { bookId, chapter } = useParams<{ bookId: string; chapter: string }>()
   const chapterNum = chapter ? parseInt(chapter, 10) : 1
@@ -162,9 +164,16 @@ export default function BibleChapter() {
     setCompareData([{ id: 'ESV', name: 'English Standard Version', verses: esvEntries }])
     getTranslations()
       .then(({ translations }) => {
-        const others = translations
-          .filter((t) => t.id !== 'ESV')
-          .slice(0, 3)
+        const english = translations.filter((t) => t.language === 'eng' && t.id !== 'ESV')
+        const sorted = [...english].sort((a, b) => {
+          const ai = PREFERRED_TRANSLATION_IDS.indexOf(a.id)
+          const bi = PREFERRED_TRANSLATION_IDS.indexOf(b.id)
+          if (ai !== -1 && bi !== -1) return ai - bi
+          if (ai !== -1) return -1
+          if (bi !== -1) return 1
+          return (a.englishName ?? a.name).localeCompare(b.englishName ?? b.name)
+        })
+        const others = sorted.slice(0, 6)
         return Promise.all(
           others.map(async (t) => {
             try {
@@ -240,7 +249,9 @@ export default function BibleChapter() {
 
   return (
     <div className="min-h-[calc(100vh-56px)]">
-      <div className="mx-auto max-w-2xl px-4 py-6">
+      <div className="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-6 md:flex-row">
+        <div className="min-w-0 flex-1">
+          <div className="max-w-2xl">
         <nav className="mb-4 flex items-center gap-2 text-sm">
           <Link to="/bible" className="text-warm-muted underline">
             Bible
@@ -309,76 +320,108 @@ export default function BibleChapter() {
             </pre>
           )}
         </article>
+
+        <footer className="mt-8 space-y-2 border-t border-warm-border pt-4">
+          <div className="flex justify-between text-sm text-warm-muted">
+            {esvData.prev ? (
+              <Link to={`/bible/${esvData.prev.bookId}/${esvData.prev.chapter}`} className="underline">
+                ← {ESV_BOOK_NAMES[esvData.prev.bookId] ?? esvData.prev.bookId} {esvData.prev.chapter}
+              </Link>
+            ) : (
+              <span />
+            )}
+            {esvData.next ? (
+              <Link to={`/bible/${esvData.next.bookId}/${esvData.next.chapter}`} className="underline">
+                {ESV_BOOK_NAMES[esvData.next.bookId] ?? esvData.next.bookId} {esvData.next.chapter} →
+              </Link>
+            ) : (
+              <span />
+            )}
+          </div>
+          <p className="text-xs text-warm-muted">
+            Scripture quotations are from the ESV® Bible (The Holy Bible, English Standard Version®), © 2001 by Crossway, a publishing ministry of Good News Publishers. Used by permission. All rights reserved.{' '}
+            <a href="https://www.esv.org" target="_blank" rel="noopener noreferrer" className="underline">
+              esv.org
+            </a>
+          </p>
+        </footer>
+          </div>
+        </div>
+
         {selectedVerses.size > 0 && (
-          <div className="mt-4 rounded-lg border border-warm-border bg-warm-surface p-4">
-            <p className="mb-3 text-sm font-medium text-warm-text">
-              Selected verses – choose an action
-            </p>
-            <div className="flex flex-wrap items-center gap-2">
-              <button
-                type="button"
-                onClick={handleAddAsOneCard}
-                className="rounded bg-warm-accent px-3 py-2 text-sm font-medium text-white hover:opacity-90"
-              >
-                Memorize with Flashcards
-              </button>
-              <button
-                type="button"
-                onClick={handleWhyDoesItMatter}
-                className="rounded border border-warm-border bg-warm-bg px-3 py-2 text-sm font-medium text-warm-text hover:bg-warm-hover"
-              >
-                Why does it matter?
-              </button>
-              <button
-                type="button"
-                onClick={handleReadToMe}
-                disabled={!selectedVerseText}
-                className="rounded border border-warm-border bg-warm-bg px-3 py-2 text-sm font-medium text-warm-text hover:bg-warm-hover disabled:opacity-50"
-              >
-                Read to me
-              </button>
-              {speaking && (
+          <aside className="w-full shrink-0 md:sticky md:top-20 md:h-fit md:w-72">
+            <div className="rounded-lg border border-warm-border bg-warm-surface p-4">
+              <p className="mb-3 text-sm font-medium text-warm-text">
+                Selected verses – choose an action
+              </p>
+              <div className="flex flex-col gap-2">
                 <button
                   type="button"
-                  onClick={handleStopReading}
-                  className="rounded border border-red-300 bg-red-50 px-3 py-2 text-sm font-medium text-red-700 dark:border-red-600 dark:bg-red-900/20 dark:text-red-300"
+                  onClick={handleAddAsOneCard}
+                  className="rounded bg-warm-accent px-3 py-2 text-sm font-medium text-white hover:opacity-90"
                 >
-                  Stop
+                  Memorize with Flashcards
                 </button>
-              )}
-              <button
-                type="button"
-                onClick={() => setCompareOpen(true)}
-                className="rounded border border-warm-border bg-warm-bg px-3 py-2 text-sm font-medium text-warm-text hover:bg-warm-hover"
-              >
-                Compare to other translations
-              </button>
+                <button
+                  type="button"
+                  onClick={handleWhyDoesItMatter}
+                  className="rounded border border-warm-border bg-warm-bg px-3 py-2 text-sm font-medium text-warm-text hover:bg-warm-hover"
+                >
+                  Why does it matter?
+                </button>
+                <button
+                  type="button"
+                  onClick={handleReadToMe}
+                  disabled={!selectedVerseText}
+                  className="rounded border border-warm-border bg-warm-bg px-3 py-2 text-sm font-medium text-warm-text hover:bg-warm-hover disabled:opacity-50"
+                >
+                  Read to me
+                </button>
+                {speaking && (
+                  <button
+                    type="button"
+                    onClick={handleStopReading}
+                    className="rounded border border-red-300 bg-red-50 px-3 py-2 text-sm font-medium text-red-700 dark:border-red-600 dark:bg-red-900/20 dark:text-red-300"
+                  >
+                    Stop
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setCompareOpen(true)}
+                  className="rounded border border-warm-border bg-warm-bg px-3 py-2 text-sm font-medium text-warm-text hover:bg-warm-hover"
+                >
+                  Compare to other translations
+                </button>
+              </div>
+              <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-warm-border pt-3">
+                <span className="text-xs text-warm-muted">Flashcards:</span>
+                <button
+                  type="button"
+                  onClick={handleAddEachVerse}
+                  className="rounded border border-warm-border px-2 py-1 text-xs font-medium text-warm-muted hover:bg-warm-hover"
+                >
+                  Add each verse
+                </button>
+                <button
+                  type="button"
+                  onClick={handleAddAsOneCard}
+                  className="rounded border border-warm-border px-2 py-1 text-xs font-medium text-warm-muted hover:bg-warm-hover"
+                >
+                  Add as one card
+                </button>
+                <Link
+                  to="/flashcards"
+                  className="text-xs text-warm-accent underline"
+                >
+                  Open Flashcards
+                </Link>
+              </div>
             </div>
-            <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-warm-border pt-3">
-              <span className="text-xs text-warm-muted">Flashcards:</span>
-              <button
-                type="button"
-                onClick={handleAddEachVerse}
-                className="rounded border border-warm-border px-2 py-1 text-xs font-medium text-warm-muted hover:bg-warm-hover"
-              >
-                Add each verse
-              </button>
-              <button
-                type="button"
-                onClick={handleAddAsOneCard}
-                className="rounded border border-warm-border px-2 py-1 text-xs font-medium text-warm-muted hover:bg-warm-hover"
-              >
-                Add as one card
-              </button>
-              <Link
-                to="/flashcards"
-                className="text-xs text-warm-accent underline"
-              >
-                Open Flashcards
-              </Link>
-            </div>
-          </div>
+          </aside>
         )}
+      </div>
+
         {compareOpen && (
           <>
             <div
@@ -426,32 +469,6 @@ export default function BibleChapter() {
             </div>
           </>
         )}
-
-        <footer className="mt-8 space-y-2 border-t border-warm-border pt-4">
-          <div className="flex justify-between text-sm text-warm-muted">
-            {esvData.prev ? (
-              <Link to={`/bible/${esvData.prev.bookId}/${esvData.prev.chapter}`} className="underline">
-                ← {ESV_BOOK_NAMES[esvData.prev.bookId] ?? esvData.prev.bookId} {esvData.prev.chapter}
-              </Link>
-            ) : (
-              <span />
-            )}
-            {esvData.next ? (
-              <Link to={`/bible/${esvData.next.bookId}/${esvData.next.chapter}`} className="underline">
-                {ESV_BOOK_NAMES[esvData.next.bookId] ?? esvData.next.bookId} {esvData.next.chapter} →
-              </Link>
-            ) : (
-              <span />
-            )}
-          </div>
-          <p className="text-xs text-warm-muted">
-            Scripture quotations are from the ESV® Bible (The Holy Bible, English Standard Version®), © 2001 by Crossway, a publishing ministry of Good News Publishers. Used by permission. All rights reserved.{' '}
-            <a href="https://www.esv.org" target="_blank" rel="noopener noreferrer" className="underline">
-              esv.org
-            </a>
-          </p>
-        </footer>
-      </div>
     </div>
   )
 }
